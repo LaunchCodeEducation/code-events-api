@@ -20,6 +20,7 @@ dotnet ef database update
 ``
 
 > create migration, run from project root
+
 ``
 dotnet ef migrations add <ENTITY_NAME>Table -o Data/Migrations/
 ``
