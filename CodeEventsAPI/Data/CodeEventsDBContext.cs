@@ -6,6 +6,7 @@ namespace CodeEventsAPI.Data {
   public class CodeEventsDBContext : DbContext {
     public CodeEventsDBContext(DbContextOptions options) : base(options) { }
 
-    public DbSet<Event> Events { get; set; }
+    public DbSet<CodeEvent> Events { get; set; }
+    // TODO: User set, EventMember? set
   }
 }
