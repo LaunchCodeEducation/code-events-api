@@ -24,3 +24,7 @@ dotnet ef database update
 ``
 dotnet ef migrations add <ENTITY_NAME>Table -o Data/Migrations/
 ``
+
+``
+dotnet dev-certs https --trust
+``
