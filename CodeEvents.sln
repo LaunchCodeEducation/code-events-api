@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeEventsAPI", "CodeEventsAPI\CodeEventsAPI.csproj", "{90B84A61-21A0-4B77-97A5-847A1BC83E06}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeEventsAPITests", "CodeEventsAPITests\CodeEventsAPITests.csproj", "{DAA43873-4FCD-4ADA-A49C-0986A2114905}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{90B84A61-21A0-4B77-97A5-847A1BC83E06}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{90B84A61-21A0-4B77-97A5-847A1BC83E06}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{90B84A61-21A0-4B77-97A5-847A1BC83E06}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DAA43873-4FCD-4ADA-A49C-0986A2114905}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DAA43873-4FCD-4ADA-A49C-0986A2114905}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DAA43873-4FCD-4ADA-A49C-0986A2114905}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DAA43873-4FCD-4ADA-A49C-0986A2114905}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
