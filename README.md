@@ -19,7 +19,7 @@ dotnet user-secrets set "ConnectionStrings:Default" "Server=localhost;Database=c
 dotnet ef database update
 ``
 
-``
 > create migration, run from project root
+``
 dotnet ef migrations add <ENTITY_NAME>Table -o Data/Migrations/
 ``
