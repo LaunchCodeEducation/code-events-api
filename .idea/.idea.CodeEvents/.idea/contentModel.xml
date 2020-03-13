@@ -19,11 +19,17 @@
             <e p="20200312173013_EventsTable.Designer.cs" t="Include" />
             <e p="20200313050345_UsersTable.cs" t="Include" />
             <e p="20200313050345_UsersTable.Designer.cs" t="Include" />
+            <e p="20200313175404_MembersTable.cs" t="Include" />
+            <e p="20200313175404_MembersTable.Designer.cs" t="Include" />
             <e p="CodeEventsDBContextModelSnapshot.cs" t="Include" />
+            <e p="obj" t="Include">
+              <e p="CodeEventsAPI.EntityFrameworkCore.targets" t="Include" />
+            </e>
           </e>
         </e>
         <e p="Models" t="Include">
           <e p="CodeEvent.cs" t="Include" />
+          <e p="Member.cs" t="Include" />
           <e p="User.cs" t="Include" />
         </e>
         <e p="obj" t="ExcludeRecursive">

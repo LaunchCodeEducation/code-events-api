@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace CodeEventsAPI.Models {
@@ -7,6 +9,8 @@ namespace CodeEventsAPI.Models {
     public string Title { get; set; }
     public string Description { get; set; }
     public DateTime Date { get; set; }
+
+    public virtual IEnumerable<Member> Members { get; set; }
   }
 
   /**

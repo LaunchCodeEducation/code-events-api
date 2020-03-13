@@ -1,13 +1,31 @@
 // TODO: how to associate User with Event
 // EventMember class?
 
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace CodeEventsAPI.Models {
   public class User {
     public long Id { get; set; }
+
     public string Email { get; set; }
+
+    // TODO: hash password on set
     public string Password { get; set; }
+
+    // virtual marks as lazy loaded
+    public virtual List<Member> Memberships { get; set; }
+
+    // TODO: convenience method for direct access to role + event objects
+    // public IEnumerable<Object> Events {
+    //   get => Memberships.Select(membership => new {
+    //     role = membership.Role, 
+    //     event = membership.Event
+    //   });
+    // }
   }
 
   public class NewUserDto {
