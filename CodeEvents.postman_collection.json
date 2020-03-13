@@ -11,7 +11,10 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": ""
+					"raw": "{{origin}}{{events}}",
+					"host": [
+						"{{origin}}{{events}}"
+					]
 				}
 			},
 			"response": []
@@ -22,7 +25,13 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": ""
+					"raw": "{{origin}}{{events}}/1",
+					"host": [
+						"{{origin}}{{events}}"
+					],
+					"path": [
+						"1"
+					]
 				}
 			},
 			"response": []
@@ -30,8 +39,40 @@
 		{
 			"name": "Create Event",
 			"request": {
-				"method": "GET",
+				"method": "POST",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"title\": \"working stuff\",\n\t\"description\": \"everybody get stepped up again\",\n\t\"date\": \"2020-03-17T18:08:33.348Z\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{origin}}{{events}}",
+					"host": [
+						"{{origin}}{{events}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create User",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\":  \"no@ok.com\",\n\t\"password\": \"yes\",\n\t\"confirmPassword\": \"no\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
 					"raw": ""
 				}
@@ -63,15 +104,21 @@
 	],
 	"variable": [
 		{
-			"id": "6b5f1bf9-d9d8-442d-a776-a30700aa4333",
+			"id": "27951456-3b4d-4b3b-8640-a41a6165c99d",
 			"key": "origin",
 			"value": "https://localhost:5001",
 			"type": "string"
 		},
 		{
-			"id": "9b7328e1-adaa-43ff-96ed-4081f7d418ea",
+			"id": "c6bba2ac-f88e-43f7-af71-493466b34387",
 			"key": "events",
 			"value": "/api/events",
+			"type": "string"
+		},
+		{
+			"id": "ef9af0a8-5deb-4fce-b407-8232a871bf50",
+			"key": "users",
+			"value": "/api/users",
 			"type": "string"
 		}
 	],
