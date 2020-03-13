@@ -7,15 +7,16 @@ using CodeEventsAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
+// TODO: abstract to APIController base class
 namespace CodeEventsAPI.Controllers {
   [ApiController]
   [Route("/api/events")]
   [Consumes(MediaTypeNames.Application.Json)]
   [Produces(MediaTypeNames.Application.Json)]
-  public class EventsController : ControllerBase {
-    private readonly CodeEventsDBContext _context;
+  public class CodeEventsController : ControllerBase {
+    private readonly CodeEventsDbContext _context;
 
-    public EventsController(CodeEventsDBContext context) {
+    public CodeEventsController(CodeEventsDbContext context) {
       _context = context;
     }
 
@@ -35,9 +36,9 @@ namespace CodeEventsAPI.Controllers {
     }
 
     [HttpPost]
-    // TODO: [ValidateModel]
+    // TODO: abstract validation/rejection into [ValidateModel]
     // https://docs.microsoft.com/en-us/aspnet/web-api/overview/formats-and-model-binding/model-validation-in-aspnet-web-api
-    public ActionResult CreateResource(NewCodeEvent newCodeEvent) {
+    public ActionResult CreateResource(NewCodeEventDto newCodeEvent) {
       if (!ModelState.IsValid) {
         return BadRequest(ModelState);
       }

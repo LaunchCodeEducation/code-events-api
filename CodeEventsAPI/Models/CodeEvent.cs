@@ -1,6 +1,5 @@
 using System;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace CodeEventsAPI.Models {
   public class CodeEvent {
@@ -13,7 +12,7 @@ namespace CodeEventsAPI.Models {
   /**
    * DTO to prevent over-posting
    */
-  public class NewCodeEvent {
+  public class NewCodeEventDto {
     [Required]
     [StringLength(40, MinimumLength = 10,
       ErrorMessage = "Title must be between 10 and 40 characters")]
