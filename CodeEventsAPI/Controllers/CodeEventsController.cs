@@ -4,6 +4,8 @@ using System.Net.Mime;
 using System.Threading.Tasks;
 using CodeEventsAPI.Data;
 using CodeEventsAPI.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -52,16 +54,19 @@ namespace CodeEventsAPI.Controllers {
     [HttpGet]
     [Route("{id}/members")]
     public ActionResult GetMembersCollection(long id) {
-      var codeEvent = _context.Events.Find(id);
+      var codeEvent = _context.Events
+        .Include(ce => ce.Members)
+        .ThenInclude(m => m.User)
+        .Single(ce => ce.Id == id);
+
       if (codeEvent == null) return NotFound();
 
-      // TODO: map Roles from numeric enum index
-      return Ok(codeEvent.Members.Select(member => member.User));
+      return Ok(codeEvent.Members.Select(member => member.ToDto()));
     }
 
     [HttpPost]
     [Route("{id}/members")]
-    public ActionResult CreateMemberResource(long id) {
+    public ActionResult CreateMemberResource(long id, HttpContext request) {
       var codeEvent = _context.Events.Find(id);
       if (codeEvent == null) return NotFound();
       // TODO: pull user data from auth (jwt/cookie?)

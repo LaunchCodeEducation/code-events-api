@@ -11,9 +11,14 @@ namespace CodeEventsAPI.Data {
 
       modelBuilder.Entity<Member>().HasKey(member => member.Id);
 
-      modelBuilder.Entity<Member>().HasIndex(member => new {
-        member.UserId, member.CodeEventId
-      }).IsUnique();
+      // TODO: store enum values as strings?
+      // modelBuilder.Entity<Member>().Property(m => m.Role).HasConversion();
+
+      modelBuilder.Entity<Member>()
+        .HasIndex(member => new {
+          member.UserId, member.CodeEventId
+        })
+        .IsUnique();
 
       modelBuilder.Entity<Member>()
         .HasOne(member => member.User)

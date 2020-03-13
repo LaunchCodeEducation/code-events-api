@@ -17,15 +17,7 @@ namespace CodeEventsAPI.Models {
     public string Password { get; set; }
 
     // virtual marks as lazy loaded
-    public virtual List<Member> Memberships { get; set; }
-
-    // TODO: convenience method for direct access to role + event objects
-    // public IEnumerable<Object> Events {
-    //   get => Memberships.Select(membership => new {
-    //     role = membership.Role, 
-    //     event = membership.Event
-    //   });
-    // }
+    public List<Member> Memberships { get; set; }
   }
 
   public class NewUserDto {

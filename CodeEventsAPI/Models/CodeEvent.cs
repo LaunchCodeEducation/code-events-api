@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
+// TODO: make namin consistent Event vs CodeEvent
 namespace CodeEventsAPI.Models {
   public class CodeEvent {
     public long Id { get; set; }
@@ -10,8 +11,12 @@ namespace CodeEventsAPI.Models {
     public string Description { get; set; }
     public DateTime Date { get; set; }
 
-    public virtual IEnumerable<Member> Members { get; set; }
+    public List<Member> Members { get; set; }
   }
+
+  public class EventDto {
+    public long Id { get; set; }
+  }  
 
   /**
    * DTO to prevent over-posting
