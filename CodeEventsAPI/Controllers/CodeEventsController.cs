@@ -39,9 +39,6 @@ namespace CodeEventsAPI.Controllers {
     // TODO: abstract validation/rejection into [ValidateModel]
     // https://docs.microsoft.com/en-us/aspnet/web-api/overview/formats-and-model-binding/model-validation-in-aspnet-web-api
     public ActionResult CreateResource(NewCodeEventDto newCodeEvent) {
-      if (!ModelState.IsValid) {
-        return BadRequest(ModelState);
-      }
 
       var entry = _context.Events.Add(new CodeEvent());
       entry.CurrentValues.SetValues(newCodeEvent);

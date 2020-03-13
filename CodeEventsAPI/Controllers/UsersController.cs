@@ -19,9 +19,6 @@ namespace CodeEventsAPI.Controllers {
 
     [HttpPost]
     public ActionResult CreateResource(NewUserDto newUserDto) {
-      if (!ModelState.IsValid) {
-        return BadRequest(ModelState);
-      }
 
       var entry = _context.Users.Add(new User());
       entry.CurrentValues.SetValues(newUserDto);
