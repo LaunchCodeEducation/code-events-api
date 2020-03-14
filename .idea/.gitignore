@@ -3,3 +3,5 @@
 # Datasource local storage ignored files
 /.idea.CodeEvents/.idea/dataSources/
 /.idea.CodeEvents/.idea/dataSources.local.xml
+# Editor-based HTTP Client requests
+/.idea.CodeEvents/.idea/httpRequests/

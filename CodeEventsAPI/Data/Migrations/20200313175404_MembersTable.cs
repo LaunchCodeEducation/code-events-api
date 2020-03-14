@@ -1,50 +1,45 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace CodeEventsAPI.Data.Migrations
-{
-    public partial class MembersTable : Migration
-    {
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.CreateTable(
-                name: "Members",
-                columns: table => new
-                {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    UserId = table.Column<long>(nullable: false),
-                    CodeEventId = table.Column<long>(nullable: false),
-                    Role = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Members", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Members_Events_CodeEventId",
-                        column: x => x.CodeEventId,
-                        principalTable: "Events",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Members_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
+namespace CodeEventsAPI.Data.Migrations {
+  public partial class MembersTable : Migration {
+    protected override void Up(MigrationBuilder migrationBuilder) {
+      migrationBuilder.CreateTable(
+        "Members",
+        table => new {
+          Id = table.Column<long>()
+            .Annotation("MySql:ValueGenerationStrategy",
+              MySqlValueGenerationStrategy.IdentityColumn),
+          UserId = table.Column<long>(),
+          CodeEventId = table.Column<long>(),
+          Role = table.Column<int>()
+        },
+        constraints: table => {
+          table.PrimaryKey("PK_Members", x => x.Id);
+          table.ForeignKey(
+            "FK_Members_CodeEvents_CodeEventId",
+            x => x.CodeEventId,
+            "CodeEvents",
+            "Id",
+            onDelete: ReferentialAction.Cascade);
+          table.ForeignKey(
+            "FK_Members_Users_UserId",
+            x => x.UserId,
+            "Users",
+            "Id",
+            onDelete: ReferentialAction.Cascade);
+        });
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Members_UserId_CodeEventId",
-                table: "Members",
-                columns: new[] { "UserId", "CodeEventId" },
-                unique: true);
-        }
-
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropTable(
-                name: "Members");
-        }
+      migrationBuilder.CreateIndex(
+        "IX_Members_UserId_CodeEventId",
+        "Members",
+        new[] {"UserId", "CodeEventId"},
+        unique: true);
     }
+
+    protected override void Down(MigrationBuilder migrationBuilder) {
+      migrationBuilder.DropTable(
+        "Members");
+    }
+  }
 }

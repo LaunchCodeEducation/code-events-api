@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CodeEventsAPI.Data.Migrations
 {
     [DbContext(typeof(CodeEventsDbContext))]
-    [Migration("20200312173013_EventsTable")]
-    partial class EventsTable
+    [Migration("20200312173013_CodeEventsTable")]
+    partial class CodeEventsTable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -19,7 +19,7 @@ namespace CodeEventsAPI.Data.Migrations
                 .HasAnnotation("ProductVersion", "3.1.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("CodeEventsAPI.Models.Event", b =>
+            modelBuilder.Entity("CodeEventsAPI.Models.CodeEvent", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -36,7 +36,7 @@ namespace CodeEventsAPI.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Events");
+                    b.ToTable("CodeEvents");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,10 +1,9 @@
 using System;
-using System.ComponentModel.DataAnnotations;
 
 namespace CodeEventsAPI.Models {
   public enum MemberRole {
     Owner,
-    Member,
+    Member
   }
 
   public class Member {
@@ -23,12 +22,12 @@ namespace CodeEventsAPI.Models {
   }
 
   public class MemberDto {
-    public string Email { get; }
-    public string Role { get; }
-
     public MemberDto(Member member) {
       Email = member.User.Email;
       Role = Enum.GetName(typeof(MemberRole), member.Role);
     }
+
+    public string Email { get; }
+    public string Role { get; }
   }
 }

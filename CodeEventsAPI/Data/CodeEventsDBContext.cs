@@ -1,10 +1,15 @@
 using CodeEventsAPI.Models;
 using Microsoft.EntityFrameworkCore;
-using Pomelo.EntityFrameworkCore.MySql;
 
 namespace CodeEventsAPI.Data {
   public class CodeEventsDbContext : DbContext {
     public CodeEventsDbContext(DbContextOptions options) : base(options) { }
+
+    public DbSet<CodeEvent> CodeEvents { get; set; }
+
+    public DbSet<User> Users { get; set; }
+
+    public DbSet<Member> Members { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
       base.OnModelCreating(modelBuilder);
@@ -30,11 +35,5 @@ namespace CodeEventsAPI.Data {
         .WithMany(codeEvent => codeEvent.Members)
         .HasForeignKey(member => member.CodeEventId);
     }
-
-    public DbSet<CodeEvent> Events { get; set; }
-
-    public DbSet<User> Users { get; set; }
-
-    public DbSet<Member> Members { get; set; }
   }
 }

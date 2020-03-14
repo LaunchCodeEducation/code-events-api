@@ -1,11 +1,5 @@
-// TODO: how to associate User with Event
-// EventMember class?
-
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 
 namespace CodeEventsAPI.Models {
   public class User {
@@ -16,7 +10,6 @@ namespace CodeEventsAPI.Models {
     // TODO: hash password on set
     public string Password { get; set; }
 
-    // virtual marks as lazy loaded
     public List<Member> Memberships { get; set; }
   }
 

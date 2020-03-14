@@ -6,37 +6,6 @@
 	},
 	"item": [
 		{
-			"name": "Get Events",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{origin}}{{events}}",
-					"host": [
-						"{{origin}}{{events}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get Event",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{origin}}{{events}}/1",
-					"host": [
-						"{{origin}}{{events}}"
-					],
-					"path": [
-						"1"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "Create Event",
 			"request": {
 				"method": "POST",
@@ -51,9 +20,47 @@
 					}
 				},
 				"url": {
-					"raw": "{{origin}}{{events}}",
+					"raw": "{{root}}/events",
 					"host": [
-						"{{origin}}{{events}}"
+						"{{root}}"
+					],
+					"path": [
+						"events"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Events",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{root}}/events",
+					"host": [
+						"{{root}}"
+					],
+					"path": [
+						"events"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Event",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{root}}/events/1",
+					"host": [
+						"{{root}}"
+					],
+					"path": [
+						"events",
+						"1"
 					]
 				}
 			},
@@ -66,7 +73,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"email\":  \"no@ok.com\",\n\t\"password\": \"yes\",\n\t\"confirmPassword\": \"no\"\n}",
+					"raw": "{\n\t\"email\":  \"no@ok.com\",\n\t\"password\": \"mypassword\",\n\t\"confirmPassword\": \"mypassword\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -74,7 +81,32 @@
 					}
 				},
 				"url": {
-					"raw": ""
+					"raw": "{{root}}/users",
+					"host": [
+						"{{root}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Members",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{root}}/events/1/members",
+					"host": [
+						"{{root}}"
+					],
+					"path": [
+						"events",
+						"1",
+						"members"
+					]
 				}
 			},
 			"response": []
@@ -104,21 +136,9 @@
 	],
 	"variable": [
 		{
-			"id": "27951456-3b4d-4b3b-8640-a41a6165c99d",
-			"key": "origin",
-			"value": "https://localhost:5001",
-			"type": "string"
-		},
-		{
-			"id": "c6bba2ac-f88e-43f7-af71-493466b34387",
-			"key": "events",
-			"value": "/api/events",
-			"type": "string"
-		},
-		{
-			"id": "ef9af0a8-5deb-4fce-b407-8232a871bf50",
-			"key": "users",
-			"value": "/api/users",
+			"id": "d6e845ed-b675-4df6-866d-98984a9f74a6",
+			"key": "root",
+			"value": "https://localhost:5001/api",
 			"type": "string"
 		}
 	],

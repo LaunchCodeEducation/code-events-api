@@ -1,9 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-// TODO: make namin consistent Event vs CodeEvent
 namespace CodeEventsAPI.Models {
   public class CodeEvent {
     public long Id { get; set; }
@@ -14,16 +12,11 @@ namespace CodeEventsAPI.Models {
     public List<Member> Members { get; set; }
   }
 
-  public class EventDto {
-    public long Id { get; set; }
-  }  
-
-  /**
-   * DTO to prevent over-posting
-   */
+  // DTO to prevent over-posting and manage API validation
   public class NewCodeEventDto {
     [Required]
-    [StringLength(40, MinimumLength = 10,
+    [StringLength(40,
+      MinimumLength = 10,
       ErrorMessage = "Title must be between 10 and 40 characters")]
     public string Title { get; set; }
 
