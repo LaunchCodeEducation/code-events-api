@@ -30,18 +30,18 @@
 - manage b2c
 - add application
     - name: code-events
-    - include web app: yes
+    - include web app: yes  
     - allow implicit: no
     - reply URL (enter two):
         - https://localhost:5001/oauth/success (for local dev)
         - !! return later with deployment callback uri !!
     - takes a minute to show the new app (no refresh button)
 - DONT FORGET TO LINK TO SUBSCRIPTION
-    - TODO: fresh intstructions
+    - TODO: fresh instructions
 - properties
-    - application id: 06eb34fd-455b-4084-92c3-07d5389e6c15
+    - application (client id) id: 06eb34fd-455b-4084-92c3-07d5389e6c15
 - application > keys
-    - generate key -> copy the key
+    - generate key (client secret) -> copy the key
         - x-TUFqf30gPfOdtPmT7(^ap0
 - ?api access > scopes?
 - top bar (azure ad b2c tab)
@@ -51,6 +51,7 @@
         - company branding (customizing auth view)
         - users -> activity
         - users -> user settings -> users can register apps??
+            - TODO: confirm if this should be off
         - user attributes -> add
 - user flows -> create user flow (recommended tab)
 - repeat for each of the flows (signup/signin, editing, reset)
