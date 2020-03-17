@@ -23,11 +23,11 @@ namespace CodeEventsAPI.Models {
 
   public class MemberDto {
     public MemberDto(Member member) {
-      Email = member.User.Email;
+      Username = member.User.Username;
       Role = Enum.GetName(typeof(MemberRole), member.Role);
     }
 
-    public string Email { get; }
+    public string Username { get; }
     public string Role { get; }
   }
 }

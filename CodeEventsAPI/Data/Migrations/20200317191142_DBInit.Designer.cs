@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CodeEventsAPI.Data.Migrations
 {
     [DbContext(typeof(CodeEventsDbContext))]
-    [Migration("20200313175404_MembersTable")]
-    partial class MembersTable
+    [Migration("20200317191142_DBInit")]
+    partial class DBInit
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -36,7 +36,7 @@ namespace CodeEventsAPI.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Events");
+                    b.ToTable("CodeEvents");
                 });
 
             modelBuilder.Entity("CodeEventsAPI.Models.Member", b =>
@@ -70,13 +70,19 @@ namespace CodeEventsAPI.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
-                    b.Property<string>("Email")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+                    b.Property<string>("AzureOId")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
-                    b.Property<string>("Password")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+                    b.Property<string>("Username")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AzureOId")
+                        .IsUnique();
+
+                    b.HasIndex("Username")
+                        .IsUnique();
 
                     b.ToTable("Users");
                 });
@@ -84,13 +90,13 @@ namespace CodeEventsAPI.Data.Migrations
             modelBuilder.Entity("CodeEventsAPI.Models.Member", b =>
                 {
                     b.HasOne("CodeEventsAPI.Models.CodeEvent", "CodeEvent")
-                        .WithMany()
+                        .WithMany("Members")
                         .HasForeignKey("CodeEventId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("CodeEventsAPI.Models.User", "User")
-                        .WithMany()
+                        .WithMany("Memberships")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

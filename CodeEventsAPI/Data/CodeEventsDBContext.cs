@@ -14,6 +14,16 @@ namespace CodeEventsAPI.Data {
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
       base.OnModelCreating(modelBuilder);
 
+      // -- USER --
+      modelBuilder.Entity<User>()
+        .HasIndex(member => member.AzureOId)
+        .IsUnique();
+
+      modelBuilder.Entity<User>()
+        .HasIndex(member => member.Username)
+        .IsUnique();
+
+      // -- MEMBER --
       modelBuilder.Entity<Member>().HasKey(member => member.Id);
 
       // TODO: store enum values as strings?
