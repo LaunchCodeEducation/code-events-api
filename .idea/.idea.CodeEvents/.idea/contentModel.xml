@@ -10,21 +10,14 @@
         <e p="bin" t="ExcludeRecursive" />
         <e p="CodeEventsAPI.csproj" t="IncludeRecursive" />
         <e p="Controllers" t="Include">
-          <e p="CodeEventsController.cs" t="Include" />
+          <e p="ApiController.cs" t="Include" />
         </e>
         <e p="Data" t="Include">
           <e p="CodeEventsDBContext.cs" t="Include" />
           <e p="Migrations" t="Include">
-            <e p="20200312173013_EventsTable.cs" t="Include" />
-            <e p="20200312173013_EventsTable.Designer.cs" t="Include" />
-            <e p="20200313050345_UsersTable.cs" t="Include" />
-            <e p="20200313050345_UsersTable.Designer.cs" t="Include" />
-            <e p="20200313175404_MembersTable.cs" t="Include" />
-            <e p="20200313175404_MembersTable.Designer.cs" t="Include" />
+            <e p="20200317191142_DBInit.cs" t="Include" />
+            <e p="20200317191142_DBInit.Designer.cs" t="Include" />
             <e p="CodeEventsDBContextModelSnapshot.cs" t="Include" />
-            <e p="obj" t="Include">
-              <e p="CodeEventsAPI.EntityFrameworkCore.targets" t="Include" />
-            </e>
           </e>
         </e>
         <e p="migrate" t="Include" />

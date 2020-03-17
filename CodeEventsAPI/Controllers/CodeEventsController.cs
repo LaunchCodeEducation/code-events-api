@@ -3,19 +3,21 @@ using System.Linq;
 using System.Net.Mime;
 using CodeEventsAPI.Data;
 using CodeEventsAPI.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace CodeEventsAPI.Controllers {
+  [Authorize]
   [ApiController]
   [Route("/api/events")]
   [Consumes(MediaTypeNames.Application.Json)]
   [Produces(MediaTypeNames.Application.Json)]
-  public class CodeEventsController : ControllerBase {
+  public class ApiController : ControllerBase {
     private readonly CodeEventsDbContext _context;
 
-    public CodeEventsController(CodeEventsDbContext context) {
+    public ApiController(CodeEventsDbContext context) {
       _context = context;
     }
 
