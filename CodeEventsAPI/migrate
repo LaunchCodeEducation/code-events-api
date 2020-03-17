@@ -1,0 +1,42 @@
+﻿CREATE TABLE IF NOT EXISTS `__EFMigrationsHistory` (
+    `MigrationId` varchar(95) NOT NULL,
+    `ProductVersion` varchar(32) NOT NULL,
+    CONSTRAINT `PK___EFMigrationsHistory` PRIMARY KEY (`MigrationId`)
+);
+
+CREATE TABLE `CodeEvents` (
+    `Id` bigint NOT NULL AUTO_INCREMENT,
+    `Title` longtext CHARACTER SET utf8mb4 NULL,
+    `Description` longtext CHARACTER SET utf8mb4 NULL,
+    `Date` datetime(6) NOT NULL,
+    CONSTRAINT `PK_CodeEvents` PRIMARY KEY (`Id`)
+);
+
+INSERT INTO `__EFMigrationsHistory` (`MigrationId`, `ProductVersion`)
+VALUES ('20200312173013_CodeEventsTable', '3.1.2');
+
+CREATE TABLE `Users` (
+    `Id` bigint NOT NULL AUTO_INCREMENT,
+    `Email` longtext CHARACTER SET utf8mb4 NULL,
+    `Password` longtext CHARACTER SET utf8mb4 NULL,
+    CONSTRAINT `PK_Users` PRIMARY KEY (`Id`)
+);
+
+INSERT INTO `__EFMigrationsHistory` (`MigrationId`, `ProductVersion`)
+VALUES ('20200313050345_UsersTable', '3.1.2');
+
+CREATE TABLE `Members` (
+    `Id` bigint NOT NULL AUTO_INCREMENT,
+    `UserId` bigint NOT NULL,
+    `CodeEventId` bigint NOT NULL,
+    `Role` int NOT NULL,
+    CONSTRAINT `PK_Members` PRIMARY KEY (`Id`),
+    CONSTRAINT `FK_Members_CodeEvents_CodeEventId` FOREIGN KEY (`CodeEventId`) REFERENCES `CodeEvents` (`Id`) ON DELETE CASCADE,
+    CONSTRAINT `FK_Members_Users_UserId` FOREIGN KEY (`UserId`) REFERENCES `Users` (`Id`) ON DELETE CASCADE
+);
+
+CREATE UNIQUE INDEX `IX_Members_UserId_CodeEventId` ON `Members` (`UserId`, `CodeEventId`);
+
+INSERT INTO `__EFMigrationsHistory` (`MigrationId`, `ProductVersion`)
+VALUES ('20200313175404_MembersTable', '3.1.2');
+

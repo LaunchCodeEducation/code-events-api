@@ -6,6 +6,7 @@
       <e p="CodeEventsAPI" t="IncludeRecursive">
         <e p="appsettings.Development.json" t="Include" />
         <e p="appsettings.json" t="Include" />
+        <e p="basic-deploy.md" t="Include" />
         <e p="bin" t="ExcludeRecursive" />
         <e p="CodeEventsAPI.csproj" t="IncludeRecursive" />
         <e p="Controllers" t="Include">
@@ -27,6 +28,8 @@
             </e>
           </e>
         </e>
+        <e p="migrate" t="Include" />
+        <e p="migrate.sql" t="Include" />
         <e p="Models" t="Include">
           <e p="CodeEvent.cs" t="Include" />
           <e p="Member.cs" t="Include" />
