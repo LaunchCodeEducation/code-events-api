@@ -1,12 +1,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mime;
+using System.Security.Claims;
 using CodeEventsAPI.Data;
 using CodeEventsAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+
+// TODO: use oid
+// var oid = HttpContext.User.FindFirstValue("http://schemas.microsoft.com/identity/claims/objectidentifier");
 
 namespace CodeEventsAPI.Controllers {
   [Authorize]
