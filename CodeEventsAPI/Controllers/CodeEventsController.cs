@@ -1,14 +1,9 @@
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Mime;
-using System.Security.Claims;
 using CodeEventsAPI.Data;
 using CodeEventsAPI.Models;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 // TODO: use oid
 // var oid = HttpContext.User.FindFirstValue("http://schemas.microsoft.com/identity/claims/objectidentifier");
@@ -20,30 +15,22 @@ namespace CodeEventsAPI.Controllers {
   [Consumes(MediaTypeNames.Application.Json)]
   [Produces(MediaTypeNames.Application.Json)]
   public class CodeEventsController : ControllerBase {
-    public static readonly string ROOT_PATH = "/api/events";
-    private readonly CodeEventsDbContext _context;
+    private readonly CodeEventService _codeEventService;
 
-    public CodeEventsController(CodeEventsDbContext context) {
-      _context = context;
+    public CodeEventsController(CodeEventService codeEventService) {
+      _codeEventService = codeEventService;
     }
 
     [HttpGet]
     public ActionResult GetCodeEvents() {
-      var User = HttpContext.User;
-      var userId = HttpContext.User.FindFirstValue("userId");
-
-      IEnumerable<CodeEvent> codeEvents = _context.CodeEvents.ToList();
-      return Ok(codeEvents);
+      return Ok(_codeEventService.GetAllCodeEvents());
     }
 
     [HttpPost]
     public ActionResult CreateCodeEvent(NewCodeEventDto newCodeEvent) {
-      // check User -> is User new? -> create User account -> proceed
-      var entry = _context.CodeEvents.Add(new CodeEvent());
-      entry.CurrentValues.SetValues(newCodeEvent);
-      _context.SaveChanges();
+      var codeEvent = _codeEventService.RegisterCodeEvent(newCodeEvent,
+        HttpContext.User);
 
-      var codeEvent = entry.Entity;
       return CreatedAtAction(nameof(GetCodeEvent),
         new {id = codeEvent.Id},
         codeEvent);
@@ -52,34 +39,34 @@ namespace CodeEventsAPI.Controllers {
     [HttpGet]
     [Route("{id}")]
     public ActionResult GetCodeEvent(long id) {
-      var codeEvent = _context.CodeEvents.Find(id);
+      var codeEvent = _codeEventService.GetCodeEventById(id);
       if (codeEvent == null) return NotFound();
 
       return Ok(codeEvent);
     }
 
+    // TODO: RBAC on authed user (middleware annotation or member service)
+    // restrict what data / MemberDto data is included based on authed user role
     [HttpGet]
     [Route("{id}/members")]
     public ActionResult GetMembers(long id) {
-      var codeEvent = _context.CodeEvents
-        .Include(ce => ce.Members)
-        .ThenInclude(m => m.User)
-        .Single(ce => ce.Id == id);
+      var codeEventMembers = _codeEventService.GetAllMembers(id);
+      if (codeEventMembers == null) return NotFound();
 
-      if (codeEvent == null) return NotFound();
-
-      return Ok(codeEvent.Members.Select(member => member.ToDto()));
+      return Ok(codeEventMembers);
     }
 
     [HttpPost]
     [Route("{id}/members")]
     public ActionResult CreateMember(long id, HttpContext request) {
-      var codeEvent = _context.CodeEvents.Find(id);
-      if (codeEvent == null) return NotFound();
-      // TODO: pull user data from auth (jwt/cookie?)
-      // integrate with AD or simulate for now?
+      var userCanRegister = _codeEventService.CanUserRegisterAsMember(id,
+        HttpContext.User);
+      if (!userCanRegister) return Forbid();
 
-      return Ok();
+      // TODO: afterware for setting cookie acccess to /api/events/{id}?
+      _codeEventService.RegisterMember(id, HttpContext.User);
+
+      return NoContent();
     }
   }
 }

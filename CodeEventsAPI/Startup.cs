@@ -31,6 +31,9 @@ namespace CodeEventsAPI {
       services.AddMvc();
       services.AddControllers();
 
+      // add coordinator services
+      services.AddScoped<CodeEventService>();
+
       // configure DB
       services.AddDbContext<CodeEventsDbContext>(dbOptions =>
         dbOptions.UseMySql(Configuration.GetConnectionString("Default")));

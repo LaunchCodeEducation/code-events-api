@@ -2,11 +2,34 @@ using System;
 
 namespace CodeEventsAPI.Models {
   public enum MemberRole {
-    Owner,
-    Member
+    Owner, // event.view, event.edit, event.delete, event.member.view, event.member.remove
+    Member // event.view, event.member.view:username, event.member.remove:self
   }
 
   public class Member {
+    public Member() { }
+
+    private Member(CodeEvent codeEvent, User user, MemberRole role) {
+      this.CodeEvent = codeEvent;
+      this.User = user;
+      this.Role = role;
+    }
+
+    private Member(long codeEventId, long userId, MemberRole role) {
+      CodeEventId = codeEventId;
+      UserId = userId;
+      Role = role;
+    }
+
+    public static Member CreateEventOwner(CodeEvent codeEvent, User member) {
+      // TODO: check for owner? service level?
+      return new Member(codeEvent, member, MemberRole.Owner);
+    }
+
+    public static Member CreateEventMember(long codeEventId, long userId) {
+      return new Member(codeEventId, userId, MemberRole.Member);
+    }
+
     public long Id { get; set; }
     public MemberRole Role { get; set; }
 

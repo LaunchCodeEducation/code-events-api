@@ -13,8 +13,10 @@ namespace CodeEventsAPI.Middleware {
       _next = next;
     }
 
-    public async Task InvokeAsync(HttpContext context,
-      CodeEventsDbContext dbContext) {
+    public async Task InvokeAsync(
+      HttpContext context,
+      CodeEventsDbContext dbContext
+    ) {
       var authedUser = context.User;
 
       if (!authedUser.Identity.IsAuthenticated) {
@@ -27,7 +29,7 @@ namespace CodeEventsAPI.Middleware {
         try {
           await dbContext.SaveChangesAsync();
         }
-        catch (DbUpdateException e) {
+        catch (DbUpdateException) {
           // users token still has "newUser" flag but has already been registered
           // TODO: more elegant way of handling this? how to clear the flag?
         }
