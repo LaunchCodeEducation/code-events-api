@@ -20,6 +20,9 @@
             <e p="CodeEventsDBContextModelSnapshot.cs" t="Include" />
           </e>
         </e>
+        <e p="Middleware" t="Include">
+          <e p="InjectAuthedUserId.cs" t="Include" />
+        </e>
         <e p="migrate" t="Include" />
         <e p="migrate.sql" t="Include" />
         <e p="Models" t="Include">

@@ -4,6 +4,7 @@ using System.Net.Mime;
 using System.Security.Claims;
 using CodeEventsAPI.Data;
 using CodeEventsAPI.Models;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,21 +19,26 @@ namespace CodeEventsAPI.Controllers {
   [Route("/api/events")]
   [Consumes(MediaTypeNames.Application.Json)]
   [Produces(MediaTypeNames.Application.Json)]
-  public class ApiController : ControllerBase {
+  public class CodeEventsController : ControllerBase {
+    public static readonly string ROOT_PATH = "/api/events";
     private readonly CodeEventsDbContext _context;
 
-    public ApiController(CodeEventsDbContext context) {
+    public CodeEventsController(CodeEventsDbContext context) {
       _context = context;
     }
 
     [HttpGet]
     public ActionResult GetCodeEvents() {
+      var User = HttpContext.User;
+      var userId = HttpContext.User.FindFirstValue("userId");
+
       IEnumerable<CodeEvent> codeEvents = _context.CodeEvents.ToList();
       return Ok(codeEvents);
     }
 
     [HttpPost]
     public ActionResult CreateCodeEvent(NewCodeEventDto newCodeEvent) {
+      // check User -> is User new? -> create User account -> proceed
       var entry = _context.CodeEvents.Add(new CodeEvent());
       entry.CurrentValues.SetValues(newCodeEvent);
       _context.SaveChanges();

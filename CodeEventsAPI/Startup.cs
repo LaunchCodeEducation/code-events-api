@@ -1,4 +1,10 @@
+using System;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 using CodeEventsAPI.Data;
+using CodeEventsAPI.Middleware;
+using CodeEventsAPI.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -29,17 +35,6 @@ namespace CodeEventsAPI {
       services.AddDbContext<CodeEventsDbContext>(dbOptions =>
         dbOptions.UseMySql(Configuration.GetConnectionString("Default")));
 
-      // configure auth
-      // services.Configure<CookiePolicyOptions>(options => {
-      //   // prevent XSS attacks
-      //   options.HttpOnly = HttpOnlyPolicy.Always;
-      //   // signed cookies
-      //   // TODO: secret for signing?
-      //   options.Secure = CookieSecurePolicy.Always;
-      //   // prevent CSRF attacks
-      //   options.MinimumSameSitePolicy = SameSiteMode.Strict;
-      // });
-
       services.AddAuthentication(AzureADB2CDefaults.AuthenticationScheme)
         .AddAzureADB2C(options => Configuration.Bind("AzureAdB2C", options));
       services.AddOptions();
@@ -54,8 +49,12 @@ namespace CodeEventsAPI {
       app.UseRouting(); // use the routing middleware
       app.UseAuthentication(); // authenticate first
       app.UseAuthorization(); // authorize next
+
+      app.UseMiddleware<InjectAuthedUserIdMiddleware>();
+
       app.UseEndpoints(endpoints =>
         endpoints.MapControllers()); // continue to Controller handlers
+
 
       // automatic DB migrations
       using var migrationSvcScope = app.ApplicationServices
