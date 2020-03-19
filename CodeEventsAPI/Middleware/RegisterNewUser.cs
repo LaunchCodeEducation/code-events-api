@@ -1,11 +1,9 @@
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using CodeEventsAPI.Data;
 using CodeEventsAPI.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 namespace CodeEventsAPI.Middleware {
   public class RegisterNewUserMiddleware {
