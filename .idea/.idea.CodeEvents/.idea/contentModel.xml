@@ -21,7 +21,8 @@
           </e>
         </e>
         <e p="Middleware" t="Include">
-          <e p="InjectAuthedUserId.cs" t="Include" />
+          <e p="AddUserIdClaimMiddleware.cs" t="Include" />
+          <e p="RegisterNewUser.cs" t="Include" />
         </e>
         <e p="migrate" t="Include" />
         <e p="migrate.sql" t="Include" />

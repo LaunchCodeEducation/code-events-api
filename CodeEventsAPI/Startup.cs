@@ -50,7 +50,8 @@ namespace CodeEventsAPI {
       app.UseAuthentication(); // authenticate first
       app.UseAuthorization(); // authorize next
 
-      app.UseMiddleware<InjectAuthedUserIdMiddleware>();
+      app.UseMiddleware<RegisterNewUserMiddleware>();
+      app.UseMiddleware<AddUserIdClaimMiddleware>();
 
       app.UseEndpoints(endpoints =>
         endpoints.MapControllers()); // continue to Controller handlers
