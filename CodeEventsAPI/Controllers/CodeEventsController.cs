@@ -1,12 +1,7 @@
 using System.Net.Mime;
-using CodeEventsAPI.Data;
 using CodeEventsAPI.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
-// TODO: use oid
-// var oid = HttpContext.User.FindFirstValue("http://schemas.microsoft.com/identity/claims/objectidentifier");
 
 namespace CodeEventsAPI.Controllers {
   [Authorize]
@@ -28,43 +23,49 @@ namespace CodeEventsAPI.Controllers {
 
     [HttpPost]
     public ActionResult CreateCodeEvent(NewCodeEventDto newCodeEvent) {
-      var codeEvent = _codeEventService.RegisterCodeEvent(newCodeEvent,
-        HttpContext.User);
+      var codeEventDto =
+        _codeEventService.RegisterCodeEvent(newCodeEvent, HttpContext.User);
 
-      return CreatedAtAction(nameof(GetCodeEvent),
-        new {id = codeEvent.Id},
-        codeEvent);
+      return CreatedAtAction(
+        nameof(GetCodeEvent),
+        new { codeEventId = codeEventDto.Id },
+        codeEventDto
+      );
     }
 
     [HttpGet]
-    [Route("{id}")]
-    public ActionResult GetCodeEvent(long id) {
-      var codeEvent = _codeEventService.GetCodeEventById(id);
-      if (codeEvent == null) return NotFound();
+    [Route("{codeEventId}")]
+    public ActionResult GetCodeEvent(long codeEventId) {
+      var codeEventDto = _codeEventService.GetCodeEventById(codeEventId);
+      if (codeEventDto == null) return NotFound();
 
-      return Ok(codeEvent);
+      return Ok(codeEventDto);
     }
 
-    // TODO: RBAC on authed user (middleware annotation or member service)
+    // TODO: RBAC on authed user CodeEvent (middleware annotation or member service)
     // restrict what data / MemberDto data is included based on authed user role
     [HttpGet]
-    [Route("{id}/members")]
-    public ActionResult GetMembers(long id) {
-      var codeEventMembers = _codeEventService.GetAllMembers(id);
-      if (codeEventMembers == null) return NotFound();
+    [Route("{codeEventId}/members")]
+    public ActionResult GetMembers(long codeEventId) {
+      var codeEventMemberDtos = _codeEventService.GetAllMembers(codeEventId);
+      if (codeEventMemberDtos == null) return NotFound();
 
-      return Ok(codeEventMembers);
+      return Ok(codeEventMemberDtos);
     }
 
     [HttpPost]
-    [Route("{id}/members")]
-    public ActionResult CreateMember(long id, HttpContext request) {
-      var userCanRegister = _codeEventService.CanUserRegisterAsMember(id,
-        HttpContext.User);
+    [Route("{codeEventId}/members")]
+    public ActionResult CreateMember(long codeEventId) {
+      var userCanRegister =
+        _codeEventService.CanUserRegisterAsMember(
+          codeEventId,
+          HttpContext.User
+        );
+
       if (!userCanRegister) return Forbid();
 
-      // TODO: afterware for setting cookie acccess to /api/events/{id}?
-      _codeEventService.RegisterMember(id, HttpContext.User);
+      // TODO: afterware for setting cookie acccess to /api/events/{codeEventId}?
+      _codeEventService.RegisterMember(codeEventId, HttpContext.User);
 
       return NoContent();
     }

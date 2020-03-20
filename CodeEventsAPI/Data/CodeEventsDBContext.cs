@@ -3,7 +3,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CodeEventsAPI.Data {
   public class CodeEventsDbContext : DbContext {
-    public CodeEventsDbContext(DbContextOptions options) : base(options) { }
+    public CodeEventsDbContext(DbContextOptions options)
+      : base(options) { }
 
     public DbSet<CodeEvent> CodeEvents { get; set; }
 
@@ -30,9 +31,11 @@ namespace CodeEventsAPI.Data {
       // modelBuilder.Entity<Member>().Property(m => m.Role).HasConversion();
 
       modelBuilder.Entity<Member>()
-        .HasIndex(member => new {
-          member.UserId, member.CodeEventId
-        })
+        .HasIndex(
+          member => new {
+            member.UserId, member.CodeEventId
+          }
+        )
         .IsUnique();
 
       modelBuilder.Entity<Member>()

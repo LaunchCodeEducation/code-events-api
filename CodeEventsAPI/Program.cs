@@ -13,23 +13,28 @@ namespace CodeEventsAPI {
 
     public static IHostBuilder CreateHostBuilder(string[] args) {
       return Host.CreateDefaultBuilder(args)
-        .ConfigureAppConfiguration((context, config) => {
-          if (!context.HostingEnvironment.IsProduction()) return;
-          var builtConfig = config.Build();
+        .ConfigureAppConfiguration(
+          (context, config) => {
+            if (!context.HostingEnvironment.IsProduction()) return;
+            var builtConfig = config.Build();
 
-          var azureServiceTokenProvider = new AzureServiceTokenProvider();
-          var keyVaultClient = new KeyVaultClient(
-            new KeyVaultClient.AuthenticationCallback(
-              azureServiceTokenProvider.KeyVaultTokenCallback));
+            var azureServiceTokenProvider = new AzureServiceTokenProvider();
+            var keyVaultClient = new KeyVaultClient(
+              new KeyVaultClient.AuthenticationCallback(
+                azureServiceTokenProvider.KeyVaultTokenCallback
+              )
+            );
 
-          config.AddAzureKeyVault(
-            $"https://{builtConfig["KeyVaultName"]}.vault.azure.net/",
-            keyVaultClient,
-            new DefaultKeyVaultSecretManager());
-        })
-        .ConfigureWebHostDefaults(webBuilder => {
-          webBuilder.UseStartup<Startup>();
-        });
+            config.AddAzureKeyVault(
+              $"https://{builtConfig["KeyVaultName"]}.vault.azure.net/",
+              keyVaultClient,
+              new DefaultKeyVaultSecretManager()
+            );
+          }
+        )
+        .ConfigureWebHostDefaults(
+          webBuilder => { webBuilder.UseStartup<Startup>(); }
+        );
     }
   }
 }

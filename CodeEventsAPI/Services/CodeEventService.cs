@@ -8,11 +8,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CodeEventsAPI {
   public interface ICodeEventService {
-    List<CodeEvent> GetAllCodeEvents();
+    List<CodeEventDto> GetAllCodeEvents();
 
-    CodeEvent GetCodeEventById(long codeEventId);
+    CodeEventDto GetCodeEventById(long codeEventId);
 
-    CodeEvent RegisterCodeEvent(
+    CodeEventDto RegisterCodeEvent(
       NewCodeEventDto newCodeEventDto,
       ClaimsPrincipal authedUser
     );
@@ -32,25 +32,19 @@ namespace CodeEventsAPI {
     }
 
     private User ConvertAuthedUser(ClaimsPrincipal authedUser) {
-      var user = new User(authedUser);
-      user.Id = Convert.ToInt64(authedUser.FindFirstValue("userId"));
-
-      /**
-       * System.InvalidOperationException: The instance of entity type 'User' cannot be tracked because another instance with the same key value for {'Id'} is already being tracked. When attaching existing entities, ensure that only one entity instance with a given key value is attached. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see the conflicting key values.
-       */
-
-      return user;
+      var authedUserId = Convert.ToInt64(authedUser.FindFirstValue("userId"));
+      return _dbContext.Users.Find(authedUserId);
     }
 
-    public CodeEvent GetCodeEventById(long codeEventId) {
-      return _dbContext.CodeEvents.Find(codeEventId);
+    public CodeEventDto GetCodeEventById(long codeEventId) {
+      return _dbContext.CodeEvents.Find(codeEventId)?.ToDto();
     }
 
-    public List<CodeEvent> GetAllCodeEvents() {
-      return _dbContext.CodeEvents.ToList();
+    public List<CodeEventDto> GetAllCodeEvents() {
+      return _dbContext.CodeEvents.Select(ce => ce.ToDto()).ToList();
     }
 
-    public CodeEvent RegisterCodeEvent(
+    public CodeEventDto RegisterCodeEvent(
       NewCodeEventDto newCodeEvent,
       ClaimsPrincipal authedUser
     ) {
@@ -64,15 +58,15 @@ namespace CodeEventsAPI {
 
       _dbContext.SaveChanges();
 
-      return codeEvent;
+      return codeEvent.ToDto();
     }
 
     public List<MemberDto> GetAllMembers(long codeEventId) {
       var codeEvent = _dbContext.CodeEvents.Include(ce => ce.Members)
         .ThenInclude(m => m.User)
-        .Single(ce => ce.Id == codeEventId);
+        .SingleOrDefault(ce => ce.Id == codeEventId);
 
-      return codeEvent.Members.Select(member => member.ToDto()).ToList();
+      return codeEvent?.Members.Select(member => member.ToDto()).ToList();
     }
 
     /**
@@ -84,13 +78,14 @@ namespace CodeEventsAPI {
       long codeEventId,
       ClaimsPrincipal authedUser
     ) {
-      var codeEventExists = _dbContext.CodeEvents.Count(ce =>
-        ce.Id == codeEventId) == 1;
+      var codeEventExists =
+        _dbContext.CodeEvents.Count(ce => ce.Id == codeEventId) == 1;
       if (!codeEventExists) return false;
 
       var user = ConvertAuthedUser(authedUser);
-      var memberCount = _dbContext.Members.Count(m =>
-        m.UserId == user.Id && m.CodeEventId == codeEventId);
+      var memberCount = _dbContext.Members.Count(
+        m => m.UserId == user.Id && m.CodeEventId == codeEventId
+      );
 
       return memberCount == 0;
     }
@@ -99,6 +94,7 @@ namespace CodeEventsAPI {
       var user = ConvertAuthedUser(authedUser);
 
       _dbContext.Members.Add(Member.CreateEventMember(codeEventId, user.Id));
+      _dbContext.SaveChanges();
     }
   }
 }
