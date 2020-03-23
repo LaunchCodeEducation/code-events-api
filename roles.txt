@@ -1,0 +1,68 @@
+Roles
+
+namespace CodeEventsAPI.Models {
+  public enum MemberRole {
+    Owner, // event.view, event.edit, event.delete, event.member.view, event.member.remove
+    Member // event.view, event.member.view:username, event.member.remove:self
+  }
+
+EventBriefDTO
+    id
+    title
+    date
+
+EventFullDTO (role: member, owner)
+    all: id
+    all: title
+    all: date
+    all: description
+    all: owner
+    member: member-list (hyperlinks: view, leave)
+    owner: member-list (hyperlinks: view, cancel)
+
+GET /api/events
+    returns: 200; EventBriefDTO
+    roles: @user
+
+POST /api/events
+    returns: 201; EventBriefDTO
+    roles: @user
+
+GET /api/events/{id}
+    role: @user
+    returns: 403;
+
+    role: @member
+    returns: 200; id, title, date, description, owner, member-list (usernames) (just hyperlinks (view) (leave))
+
+    role: @owner
+    returns: 200; id, title, date, description, owner, member-list (usernames, and emails) (just hyperlinks (cancel))
+    
+POST /api/events/{id}/members
+    role: @user
+    returns: 403;
+
+    role: @member
+    returns: 403;
+    
+    role: @owner
+    returns: 201; 
+
+GET /api/events/{id}/members
+    role: @user
+    returns: 403;
+
+    role: @member
+    returns: 200; member-list (usernames) (just hyperlinks (view) (leave))
+
+    role: @owner
+    returns: 200; member-list (usernames & emails) (just hyperlinks (view), (cancel))
+
+
+User
+
+
+Owner
+
+
+Member
