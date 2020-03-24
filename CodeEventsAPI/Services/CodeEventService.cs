@@ -8,11 +8,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CodeEventsAPI {
   public interface ICodeEventService {
-    List<CodeEventDto> GetAllCodeEvents();
+    List<PublicCodeEventDto> GetAllCodeEvents();
 
-    CodeEventDto GetCodeEventById(long codeEventId);
+    MemberCodeEventDto GetCodeEventById(long codeEventId);
 
-    CodeEventDto RegisterCodeEvent(
+    CodeEvent RegisterCodeEvent(
       NewCodeEventDto newCodeEventDto,
       ClaimsPrincipal authedUser
     );
@@ -62,15 +62,16 @@ namespace CodeEventsAPI {
       );
     }
 
-    public CodeEventDto GetCodeEventById(long codeEventId) {
-      return _dbContext.CodeEvents.Find(codeEventId)?.ToDto();
+    public MemberCodeEventDto GetCodeEventById(long codeEventId) {
+      // TODO: refactor to get member for ToMemberDto
+      return _dbContext.CodeEvents.Find(codeEventId)?.ToMemberDto()();
     }
 
-    public List<CodeEventDto> GetAllCodeEvents() {
-      return _dbContext.CodeEvents.Select(ce => ce.ToDto()).ToList();
+    public List<PublicCodeEventDto> GetAllCodeEvents() {
+      return _dbContext.CodeEvents.Select(ce => ce.ToPublicDto()).ToList();
     }
 
-    public CodeEventDto RegisterCodeEvent(
+    public CodeEvent RegisterCodeEvent(
       NewCodeEventDto newCodeEvent,
       ClaimsPrincipal authedUser
     ) {
@@ -84,7 +85,7 @@ namespace CodeEventsAPI {
 
       _dbContext.SaveChanges();
 
-      return codeEvent.ToDto();
+      return codeEvent;
     }
 
     public List<MemberDto> GetMembersList(

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using CodeEventsAPI.Controllers;
 
 namespace CodeEventsAPI.Models {
   public class CodeEvent {
@@ -11,40 +12,58 @@ namespace CodeEventsAPI.Models {
 
     public List<Member> Members { get; set; }
 
-    public CodeEventDto ToDto() {
-      return new CodeEventDto(this);
+    public PublicCodeEventDto ToPublicDto() {
+      return new PublicCodeEventDto(this);
+    }
+
+    public MemberCodeEventDto ToMemberDto(Member requestingMember) {
+      return requestingMember.Role switch {
+        MemberRole.Owner => MemberCodeEventDto.ForOwner(this),
+        MemberRole.Member => MemberCodeEventDto.ForMember(this),
+        _ => null,
+      };
     }
   }
 
-  // TODO: implement, replace CodeEventDto?
-  /*
-  EventFullDTO (role: member, owner)
-    all: id
-    all: title
-    all: date
-    all: description
-    all: owner
-    links:
-      members: @member, @owner
-      leave: @member
-      cancel: @owner
-  */
+  public class PublicCodeEventDto {
+    public string Title { get; }
+    public DateTime Date { get; }
+    public dynamic Links { get; } // dynamic lets you edit the object on the fly
+
+    public PublicCodeEventDto(CodeEvent codeEvent) {
+      Title = codeEvent.Title;
+      Date = codeEvent.Date;
+      Links = new {
+        CodeEvent = CodeEventsController.Routes.GetCodeEvent(codeEvent),
+        Members = CodeEventsController.Routes.GetMembers(codeEvent),
+      };
+    }
+  }
 
   // do not serialize Members (recursive serialization exception)
-  public class CodeEventDto {
-    public long Id { get; }
-    public string Title { get; }
+  public class MemberCodeEventDto : PublicCodeEventDto {
     public string Description { get; }
-    public DateTime Date { get; }
 
-    public CodeEventDto(CodeEvent codeEvent) {
-      Id = codeEvent.Id;
-      Title = codeEvent.Title;
+    internal MemberCodeEventDto(CodeEvent codeEvent)
+      : base(codeEvent) {
       Description = codeEvent.Description;
-      Date = codeEvent.Date;
     }
 
-    // TODO: HAL links prop?
+    public static MemberCodeEventDto ForMember(CodeEvent codeEvent) {
+      var baseCodeEventDto = new MemberCodeEventDto(codeEvent);
+      baseCodeEventDto.Links["Leave"] = CodeEventsController.Routes
+        .LeaveCodeEvent(codeEvent);
+
+      return baseCodeEventDto;
+    }
+
+    public static MemberCodeEventDto ForOwner(CodeEvent codeEvent) {
+      var baseCodeEventDto = new MemberCodeEventDto(codeEvent);
+      baseCodeEventDto.Links["Cancel"] = CodeEventsController.Routes
+        .CancelCodeEvent(codeEvent);
+
+      return baseCodeEventDto;
+    }
   }
 
   // DTO to prevent over-posting and manage API validation

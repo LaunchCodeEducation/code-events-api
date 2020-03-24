@@ -67,13 +67,14 @@ namespace CodeEventsAPI.Controllers {
 
     [HttpPost]
     public ActionResult CreateCodeEvent(NewCodeEventDto newCodeEvent) {
-      var codeEventDto =
-        _codeEventService.RegisterCodeEvent(newCodeEvent, HttpContext.User);
+      var codeEvent = _codeEventService.RegisterCodeEvent(
+        newCodeEvent,
+        HttpContext.User
+      );
 
       return CreatedAtAction(
         nameof(GetCodeEvent),
-        new { codeEventId = codeEventDto.Id },
-        codeEventDto
+        new { codeEventId = codeEvent.Id }
       );
     }
 
