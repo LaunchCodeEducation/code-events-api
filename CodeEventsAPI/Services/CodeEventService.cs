@@ -10,7 +10,7 @@ namespace CodeEventsAPI {
   public interface ICodeEventService {
     List<PublicCodeEventDto> GetAllCodeEvents();
 
-    MemberCodeEventDto GetCodeEventById(long codeEventId);
+    MemberCodeEventDto GetCodeEventById(long codeEventId, ClaimsPrincipal authedUser);
 
     CodeEvent RegisterCodeEvent(
       NewCodeEventDto newCodeEventDto,
@@ -62,9 +62,9 @@ namespace CodeEventsAPI {
       );
     }
 
-    public MemberCodeEventDto GetCodeEventById(long codeEventId) {
-      // TODO: refactor to get member for ToMemberDto
-      return _dbContext.CodeEvents.Find(codeEventId)?.ToMemberDto()();
+    public MemberCodeEventDto GetCodeEventById(long codeEventId, ClaimsPrincipal authedUser) {
+      var requestingMember = ConvertAuthedUserToMember(codeEventId, authedUser);
+      return _dbContext.CodeEvents.Find(codeEventId)?.ToMemberDto(requestingMember);
     }
 
     public List<PublicCodeEventDto> GetAllCodeEvents() {

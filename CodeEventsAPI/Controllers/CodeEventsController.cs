@@ -81,7 +81,11 @@ namespace CodeEventsAPI.Controllers {
     [HttpGet]
     [Route("{codeEventId}")]
     public ActionResult GetCodeEvent(long codeEventId) {
-      var codeEventDto = _codeEventService.GetCodeEventById(codeEventId);
+      var userIsMember =
+        _codeEventService.IsUserAMember(codeEventId, HttpContext.User);
+      if (!userIsMember) return Forbid();
+
+      var codeEventDto = _codeEventService.GetCodeEventById(codeEventId, HttpContext.User);
       if (codeEventDto == null) return NotFound();
 
       return Ok(codeEventDto);
