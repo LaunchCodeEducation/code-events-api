@@ -153,5 +153,19 @@ namespace CodeEventsAPI.Controllers {
 
       return NoContent();
     }
+
+    [HttpDelete]
+    [Route("{codeEventId}")]
+    public ActionResult CancelCodeEvent(long codeEventId) {
+      var isOwner = _codeEventService.IsUserAnOwner(
+        codeEventId,
+        HttpContext.User
+      );
+      if (!isOwner) return Forbid();
+
+      _codeEventService.CancelCodeEvent(codeEventId);
+
+      return NoContent();
+    }
   }
 }
