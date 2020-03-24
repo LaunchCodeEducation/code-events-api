@@ -119,7 +119,6 @@ namespace CodeEventsAPI.Controllers {
       return NoContent();
     }
 
-    // TODO: leave and remove member DELETE endpoint
     [HttpDelete]
     [Route("{codeEventId}/members")]
     public ActionResult LeaveCodeEvent(long codeEventId) {
