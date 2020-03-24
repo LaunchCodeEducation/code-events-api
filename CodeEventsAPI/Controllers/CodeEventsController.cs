@@ -60,6 +60,7 @@ namespace CodeEventsAPI.Controllers {
       _codeEventService = codeEventService;
     }
 
+    [AllowAnonymous]
     [HttpGet]
     public ActionResult GetCodeEvents() {
       return Ok(_codeEventService.GetAllCodeEvents());
