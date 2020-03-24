@@ -37,6 +37,8 @@ namespace CodeEventsAPI {
     void RemoveMember(Member memberToRemove);
 
     void LeaveCodeEvent(long codeEventId, ClaimsPrincipal authedUser);
+
+    void CancelCodeEvent(long codeEventId);
   }
 
   public class CodeEventService : ICodeEventService {
@@ -163,6 +165,12 @@ namespace CodeEventsAPI {
     public void LeaveCodeEvent(long codeEventId, ClaimsPrincipal authedUser) {
       var leavingMember = ConvertAuthedUserToMember(codeEventId, authedUser);
       RemoveMember(leavingMember);
+    }
+
+    public void CancelCodeEvent(long codeEventId) {
+      var codeEventProxy = new CodeEvent(){Id=codeEventId};
+      _dbContext.CodeEvents.Remove(codeEventProxy);
+      _dbContext.SaveChanges();
     }
   }
 }
