@@ -24,6 +24,8 @@ namespace CodeEventsAPI.Data {
         .HasIndex(member => member.Username)
         .IsUnique();
 
+      modelBuilder.Entity<User>().HasIndex(member => member.Email).IsUnique();
+
       // -- MEMBER --
       modelBuilder.Entity<Member>().HasKey(member => member.Id);
 

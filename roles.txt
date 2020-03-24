@@ -7,9 +7,10 @@ namespace CodeEventsAPI.Models {
   }
 
 EventBriefDTO
-    id
     title
     date
+    links:
+        event
 
 EventFullDTO (role: member, owner)
     all: id
@@ -17,46 +18,75 @@ EventFullDTO (role: member, owner)
     all: date
     all: description
     all: owner
-    member: member-list (hyperlinks: view, leave)
-    owner: member-list (hyperlinks: view, cancel)
+    links:
+        members: @member, @owner
+        leave: @member
+        cancel: @owner
 
-GET /api/events
+        
+MemberDTO (roles: member, owner)
+    username: all
+    role: all
+    email: @owner
+    links:
+        remove: @owner
+    
+CodeEvent + Member DTO Strategy
+    - ToDTO(Member requestingMember)
+    - check their Role
+    - build respective DTO based on Role + rules
+
+entrypoint: /api/events
+
+GET 
     returns: 200; EventBriefDTO
     roles: @user
 
-POST /api/events
+POST 
     returns: 201; EventBriefDTO
     roles: @user
 
-GET /api/events/{id}
+GET /{codeEventId}
     role: @user
     returns: 403;
 
     role: @member
-    returns: 200; id, title, date, description, owner, member-list (usernames) (just hyperlinks (view) (leave))
+    returns: 200; EventFullDTO
 
     role: @owner
-    returns: 200; id, title, date, description, owner, member-list (usernames, and emails) (just hyperlinks (cancel))
+    returns: 200; EventFullDTO
     
-POST /api/events/{id}/members
+POST /{codeEventId}/members
     role: @user
-    returns: 403;
+    returns: 204;
 
     role: @member
-    returns: 403;
+    returns: 400;
     
     role: @owner
-    returns: 201; 
+    returns: 400; 
 
-GET /api/events/{id}/members
+GET /{codeEventId}/members
     role: @user
     returns: 403;
 
     role: @member
-    returns: 200; member-list (usernames) (just hyperlinks (view) (leave))
+    returns: 200; member-list (usernames, roles) (just hyperlinks (view) (leave)
+    )
 
     role: @owner
     returns: 200; member-list (usernames & emails) (just hyperlinks (view), (cancel))
+    
+TODO: create
+DELETE /{codeEventId}/members/{memberId?}
+    memberId: optional param to support @member and @owner consumption
+
+    @user: 403
+    @member:
+        get member id from authed user
+    @owner:
+        204
+     
 
 
 User

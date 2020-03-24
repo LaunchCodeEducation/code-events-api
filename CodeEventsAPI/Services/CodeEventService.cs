@@ -17,11 +17,26 @@ namespace CodeEventsAPI {
       ClaimsPrincipal authedUser
     );
 
-    List<MemberDto> GetAllMembers(long codeEventId);
-
     bool CanUserRegisterAsMember(long codeEventId, ClaimsPrincipal authedUser);
 
-    void RegisterMember(long codeEventId, ClaimsPrincipal authedUser);
+    bool IsUserAMember(long codeEventId, ClaimsPrincipal authedUser);
+
+    bool IsUserAnOwner(long codeEventId, ClaimsPrincipal authedUser);
+
+    bool DoesMemberExist(long memberId);
+
+    List<MemberDto> GetMembersList(
+      long codeEventId,
+      ClaimsPrincipal authedUser
+    );
+
+    void JoinCodeEvent(long codeEventId, ClaimsPrincipal authedUser);
+
+    void RemoveMember(long memberId);
+
+    void RemoveMember(Member memberToRemove);
+
+    void LeaveCodeEvent(long codeEventId, ClaimsPrincipal authedUser);
   }
 
   public class CodeEventService : ICodeEventService {
@@ -31,9 +46,20 @@ namespace CodeEventsAPI {
       _dbContext = dbContext;
     }
 
-    private User ConvertAuthedUser(ClaimsPrincipal authedUser) {
+    private User ConvertAuthedUserToUser(ClaimsPrincipal authedUser) {
       var authedUserId = Convert.ToInt64(authedUser.FindFirstValue("userId"));
       return _dbContext.Users.Find(authedUserId);
+    }
+
+    private Member ConvertAuthedUserToMember(
+      long codeEventId,
+      ClaimsPrincipal authedUser
+    ) {
+      var user = ConvertAuthedUserToUser(authedUser);
+
+      return _dbContext.Members.First(
+        m => m.UserId == user.Id && m.CodeEventId == codeEventId
+      );
     }
 
     public CodeEventDto GetCodeEventById(long codeEventId) {
@@ -48,7 +74,7 @@ namespace CodeEventsAPI {
       NewCodeEventDto newCodeEvent,
       ClaimsPrincipal authedUser
     ) {
-      var owner = ConvertAuthedUser(authedUser);
+      var owner = ConvertAuthedUserToUser(authedUser);
 
       var codeEventEntry = _dbContext.CodeEvents.Add(new CodeEvent());
       codeEventEntry.CurrentValues.SetValues(newCodeEvent);
@@ -61,40 +87,81 @@ namespace CodeEventsAPI {
       return codeEvent.ToDto();
     }
 
-    public List<MemberDto> GetAllMembers(long codeEventId) {
+    public List<MemberDto> GetMembersList(
+      long codeEventId,
+      ClaimsPrincipal authedUser
+    ) {
+      var requestingMember = ConvertAuthedUserToMember(codeEventId, authedUser);
+
       var codeEvent = _dbContext.CodeEvents.Include(ce => ce.Members)
         .ThenInclude(m => m.User)
         .SingleOrDefault(ce => ce.Id == codeEventId);
 
-      return codeEvent?.Members.Select(member => member.ToDto()).ToList();
+
+      return codeEvent?.Members.Select(member => member.ToDto(requestingMember))
+        .ToList();
     }
 
-    /**
-     * guard clauses:
-     * - CodeEvent not found -> false
-     * - already a Member -> false
-     */
     public bool CanUserRegisterAsMember(
       long codeEventId,
       ClaimsPrincipal authedUser
     ) {
-      var codeEventExists =
-        _dbContext.CodeEvents.Count(ce => ce.Id == codeEventId) == 1;
+      var isMember = IsUserAMember(codeEventId, authedUser);
+
+      return !isMember;
+    }
+
+    public bool IsUserAMember(long codeEventId, ClaimsPrincipal authedUser) {
+      var codeEventCount =
+        _dbContext.CodeEvents.Count(ce => ce.Id == codeEventId);
+      var codeEventExists = codeEventCount == 1;
       if (!codeEventExists) return false;
 
-      var user = ConvertAuthedUser(authedUser);
+      var user = ConvertAuthedUserToUser(authedUser);
       var memberCount = _dbContext.Members.Count(
         m => m.UserId == user.Id && m.CodeEventId == codeEventId
       );
+      var isMember = memberCount == 1;
 
-      return memberCount == 0;
+      return isMember;
     }
 
-    public void RegisterMember(long codeEventId, ClaimsPrincipal authedUser) {
-      var user = ConvertAuthedUser(authedUser);
+    public bool IsUserAnOwner(long codeEventId, ClaimsPrincipal authedUser) {
+      var isMember = IsUserAMember(codeEventId, authedUser);
+      if (!isMember) return false;
+
+      var requestingMember = ConvertAuthedUserToMember(codeEventId, authedUser);
+
+      return requestingMember.Role == MemberRole.Owner;
+    }
+
+    public bool DoesMemberExist(long memberId) {
+      var memberCount = _dbContext.Members.Count(m => m.Id == memberId);
+      var memberExists = memberCount == 1;
+
+      return memberExists;
+    }
+
+    public void JoinCodeEvent(long codeEventId, ClaimsPrincipal authedUser) {
+      var user = ConvertAuthedUserToUser(authedUser);
 
       _dbContext.Members.Add(Member.CreateEventMember(codeEventId, user.Id));
       _dbContext.SaveChanges();
+    }
+
+    public void RemoveMember(Member memberToRemove) {
+      _dbContext.Members.Remove(memberToRemove);
+      _dbContext.SaveChanges();
+    }
+
+    public void RemoveMember(long memberId) {
+      var memberProxy = new Member() { Id = memberId };
+      RemoveMember(memberProxy);
+    }
+
+    public void LeaveCodeEvent(long codeEventId, ClaimsPrincipal authedUser) {
+      var leavingMember = ConvertAuthedUserToMember(codeEventId, authedUser);
+      RemoveMember(leavingMember);
     }
   }
 }

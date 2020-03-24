@@ -10,6 +10,7 @@
         <e p="bin" t="ExcludeRecursive" />
         <e p="CodeEventsAPI.csproj" t="IncludeRecursive" />
         <e p="Controllers" t="Include">
+          <e p="ApiRoute.cs" t="Include" />
           <e p="CodeEventsController.cs" t="Include" />
         </e>
         <e p="Data" t="Include">
@@ -17,6 +18,8 @@
           <e p="Migrations" t="Include">
             <e p="20200317191142_DBInit.cs" t="Include" />
             <e p="20200317191142_DBInit.Designer.cs" t="Include" />
+            <e p="20200324162026_Users_AddEmail.cs" t="Include" />
+            <e p="20200324162026_Users_AddEmail.Designer.cs" t="Include" />
             <e p="CodeEventsDBContextModelSnapshot.cs" t="Include" />
           </e>
         </e>

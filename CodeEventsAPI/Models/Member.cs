@@ -1,4 +1,5 @@
 using System;
+using CodeEventsAPI.Controllers;
 
 namespace CodeEventsAPI.Models {
   public enum MemberRole {
@@ -22,7 +23,6 @@ namespace CodeEventsAPI.Models {
     }
 
     public static Member CreateEventOwner(CodeEvent codeEvent, User member) {
-      // TODO: check for owner? service level?
       return new Member(codeEvent, member, MemberRole.Owner);
     }
 
@@ -39,18 +39,38 @@ namespace CodeEventsAPI.Models {
     public long CodeEventId { get; set; }
     public CodeEvent CodeEvent { get; set; }
 
-    public MemberDto ToDto() {
-      return new MemberDto(this);
+    public MemberDto ToDto(Member requestingMember) {
+      return requestingMember.Role switch {
+        MemberRole.Owner => MemberDto.ForOwner(this),
+        MemberRole.Member => MemberDto.ForMember(this),
+        _ => null
+      };
     }
   }
 
   public class MemberDto {
-    public MemberDto(Member member) {
+    private MemberDto(Member member) {
+      Email = null;
+      Links = null;
       Username = member.User.Username;
       Role = Enum.GetName(typeof(MemberRole), member.Role);
     }
 
-    public string Username { get; }
+    public static MemberDto ForMember(Member member) => new MemberDto(member);
+
+    public static MemberDto ForOwner(Member member) {
+      var memberDtoBase = new MemberDto(member);
+      memberDtoBase.Email = member.User.Email;
+      memberDtoBase.Links = new {
+        Remove = CodeEventsController.Routes.RemoveMember(member),
+      };
+
+      return memberDtoBase;
+    }
+
     public string Role { get; }
+    public string Username { get; }
+    public string Email { get; private set; }
+    public object Links { get; private set; }
   }
 }

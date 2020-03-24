@@ -5,9 +5,10 @@ namespace CodeEventsAPI.Models {
   public class User {
     public User() { }
 
-    public User(ClaimsPrincipal AdB2CUser) {
-      Username = AdB2CUser.Identity.Name;
-      AzureOId = AdB2CUser.FindFirstValue(
+    public User(ClaimsPrincipal authedUser) {
+      Username = authedUser.Identity.Name;
+      Email = authedUser.FindFirst(ClaimTypes.Email).Value;
+      AzureOId = authedUser.FindFirstValue(
         "http://schemas.microsoft.com/identity/claims/objectidentifier"
       );
     }
@@ -20,6 +21,8 @@ namespace CodeEventsAPI.Models {
 
     // TODO: check for unique
     public string Username { get; set; }
+
+    public string Email { get; set; }
 
     public List<Member> Memberships { get; set; }
   }

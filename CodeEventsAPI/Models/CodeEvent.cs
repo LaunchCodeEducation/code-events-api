@@ -16,6 +16,20 @@ namespace CodeEventsAPI.Models {
     }
   }
 
+  // TODO: implement, replace CodeEventDto?
+  /*
+  EventFullDTO (role: member, owner)
+    all: id
+    all: title
+    all: date
+    all: description
+    all: owner
+    links:
+      members: @member, @owner
+      leave: @member
+      cancel: @owner
+  */
+
   // do not serialize Members (recursive serialization exception)
   public class CodeEventDto {
     public long Id { get; }
