@@ -90,6 +90,10 @@ namespace CodeEventsAPI.Controllers {
         _codeEventService.IsUserAMember(codeEventId, HttpContext.User);
       if (!userIsMember) return StatusCode(403);
 
+      var userIsOwner =
+        _codeEventService.IsUserAnOwner(codeEventId, HttpContext.User);
+      if (userIsOwner) return BadRequest();
+
       _codeEventService.LeaveCodeEvent(codeEventId, HttpContext.User);
 
       return NoContent();
