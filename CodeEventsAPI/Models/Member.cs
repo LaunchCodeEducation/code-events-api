@@ -1,4 +1,5 @@
 using System;
+using System.Dynamic;
 using CodeEventsAPI.Controllers;
 
 namespace CodeEventsAPI.Models {
@@ -41,8 +42,8 @@ namespace CodeEventsAPI.Models {
 
     public MemberDto ToDto(Member requestingMember) {
       return requestingMember.Role switch {
-        MemberRole.Owner => MemberDto.ForOwner(this),
         MemberRole.Member => MemberDto.ForMember(this),
+        MemberRole.Owner => MemberDto.ForOwner(this, requestingMember),
         _ => null
       };
     }
@@ -51,19 +52,20 @@ namespace CodeEventsAPI.Models {
   public class MemberDto {
     private MemberDto(Member member) {
       Email = null;
-      Links = null;
+      Links = new ExpandoObject();
       Username = member.User.Username;
       Role = Enum.GetName(typeof(MemberRole), member.Role);
     }
 
     public static MemberDto ForMember(Member member) => new MemberDto(member);
 
-    public static MemberDto ForOwner(Member member) {
+    public static MemberDto ForOwner(Member member, Member owner) {
       var memberDtoBase = new MemberDto(member);
       memberDtoBase.Email = member.User.Email;
-      memberDtoBase.Links = new {
-        Remove = CodeEventsController.ResourceLinks.RemoveMember(member),
-      };
+      if (member.Id != owner.Id) {
+        memberDtoBase.Links.Remove =
+          CodeEventsController.ResourceLinks.RemoveMember(member);
+      }
 
       return memberDtoBase;
     }
@@ -71,6 +73,6 @@ namespace CodeEventsAPI.Models {
     public string Role { get; }
     public string Username { get; }
     public string Email { get; private set; }
-    public object Links { get; private set; }
+    public dynamic Links { get; private set; }
   }
 }

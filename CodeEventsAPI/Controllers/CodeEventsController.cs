@@ -1,5 +1,3 @@
-using System;
-using System.Net.Http;
 using System.Net.Mime;
 using CodeEventsAPI.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -14,7 +12,8 @@ namespace CodeEventsAPI.Controllers {
   public class CodeEventsController : ControllerBase {
     public const string Entrypoint = "/api/events";
 
-    public static readonly ResourceLinks ResourceLinks = new ResourceLinks(Entrypoint);
+    public static readonly ResourceLinks ResourceLinks =
+      new ResourceLinks(Entrypoint);
 
     private readonly CodeEventService _codeEventService;
 
@@ -37,7 +36,8 @@ namespace CodeEventsAPI.Controllers {
 
       return CreatedAtAction(
         nameof(GetCodeEvent),
-        new { codeEventId = codeEvent.Id }
+        new { codeEventId = codeEvent.Id },
+        codeEvent.ToPublicDto()
       );
     }
 

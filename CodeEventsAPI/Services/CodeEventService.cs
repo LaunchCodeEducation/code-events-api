@@ -10,7 +10,10 @@ namespace CodeEventsAPI {
   public interface ICodeEventService {
     List<PublicCodeEventDto> GetAllCodeEvents();
 
-    MemberCodeEventDto GetCodeEventById(long codeEventId, ClaimsPrincipal authedUser);
+    MemberCodeEventDto GetCodeEventById(
+      long codeEventId,
+      ClaimsPrincipal authedUser
+    );
 
     CodeEvent RegisterCodeEvent(
       NewCodeEventDto newCodeEventDto,
@@ -64,9 +67,13 @@ namespace CodeEventsAPI {
       );
     }
 
-    public MemberCodeEventDto GetCodeEventById(long codeEventId, ClaimsPrincipal authedUser) {
+    public MemberCodeEventDto GetCodeEventById(
+      long codeEventId,
+      ClaimsPrincipal authedUser
+    ) {
       var requestingMember = ConvertAuthedUserToMember(codeEventId, authedUser);
-      return _dbContext.CodeEvents.Find(codeEventId)?.ToMemberDto(requestingMember);
+      return _dbContext.CodeEvents.Find(codeEventId)
+        ?.ToMemberDto(requestingMember);
     }
 
     public List<PublicCodeEventDto> GetAllCodeEvents() {
@@ -77,13 +84,13 @@ namespace CodeEventsAPI {
       NewCodeEventDto newCodeEvent,
       ClaimsPrincipal authedUser
     ) {
-      var owner = ConvertAuthedUserToUser(authedUser);
+      var user = ConvertAuthedUserToUser(authedUser);
 
       var codeEventEntry = _dbContext.CodeEvents.Add(new CodeEvent());
       codeEventEntry.CurrentValues.SetValues(newCodeEvent);
       var codeEvent = codeEventEntry.Entity;
 
-      _dbContext.Members.Add(Member.CreateEventOwner(codeEvent, owner));
+      _dbContext.Members.Add(Member.CreateEventOwner(codeEvent, user));
 
       _dbContext.SaveChanges();
 
@@ -168,7 +175,7 @@ namespace CodeEventsAPI {
     }
 
     public void CancelCodeEvent(long codeEventId) {
-      var codeEventProxy = new CodeEvent(){Id=codeEventId};
+      var codeEventProxy = new CodeEvent() { Id = codeEventId };
       _dbContext.CodeEvents.Remove(codeEventProxy);
       _dbContext.SaveChanges();
     }

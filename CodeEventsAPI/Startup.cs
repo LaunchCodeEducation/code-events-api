@@ -38,6 +38,7 @@ namespace CodeEventsAPI {
         Configuration.GetSection("AzureAdB2C")
       );
 
+      // TODO: add to keyvault on deploy
       ServerConfig.Origin = Configuration.GetValue<string>("ServerOrigin");
     }
 
