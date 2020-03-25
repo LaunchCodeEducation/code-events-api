@@ -6,7 +6,7 @@ using CodeEventsAPI.Data;
 using CodeEventsAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace CodeEventsAPI {
+namespace CodeEventsAPI.Services {
   public interface ICodeEventService {
     List<PublicCodeEventDto> GetAllCodeEvents();
 
