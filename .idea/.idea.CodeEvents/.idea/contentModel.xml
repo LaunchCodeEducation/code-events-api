@@ -45,6 +45,7 @@
         <e p="Properties" t="Include">
           <e p="launchSettings.json" t="Include" />
         </e>
+        <e p="ServerConfig.cs" t="Include" />
         <e p="Services" t="Include">
           <e p="CodeEventService.cs" t="Include" />
         </e>

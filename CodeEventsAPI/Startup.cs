@@ -37,6 +37,8 @@ namespace CodeEventsAPI {
       services.Configure<AzureADB2COptions>(
         Configuration.GetSection("AzureAdB2C")
       );
+
+      ServerConfig.Origin = Configuration.GetValue<string>("ServerOrigin");
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {

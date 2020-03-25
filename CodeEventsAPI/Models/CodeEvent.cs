@@ -30,12 +30,12 @@ namespace CodeEventsAPI.Models {
     public DateTime Date { get; }
     public dynamic Links { get; } // dynamic lets you edit the object on the fly
 
-    public PublicCodeEventDto(CodeEvent codeEvent) {
+    internal PublicCodeEventDto(CodeEvent codeEvent) {
       Title = codeEvent.Title;
       Date = codeEvent.Date;
       Links = new {
         CodeEvent = CodeEventsController.Routes.GetCodeEvent(codeEvent),
-        Members = CodeEventsController.Routes.GetMembers(codeEvent),
+        Join = CodeEventsController.Routes.JoinCodeEvent(codeEvent),
       };
     }
   }
@@ -44,9 +44,10 @@ namespace CodeEventsAPI.Models {
   public class MemberCodeEventDto : PublicCodeEventDto {
     public string Description { get; }
 
-    internal MemberCodeEventDto(CodeEvent codeEvent)
+    private MemberCodeEventDto(CodeEvent codeEvent)
       : base(codeEvent) {
       Description = codeEvent.Description;
+      Links["Members"] = CodeEventsController.Routes.GetMembers(codeEvent);
     }
 
     public static MemberCodeEventDto ForMember(CodeEvent codeEvent) {

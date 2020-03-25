@@ -1,8 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Mime;
-using System.Runtime.InteropServices;
 using CodeEventsAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,13 +8,19 @@ using Microsoft.AspNetCore.Mvc;
 namespace CodeEventsAPI.Controllers {
   public struct ApiLinks {
     public readonly Func<CodeEvent, ApiRoute> GetCodeEvent;
+    public readonly Func<CodeEvent, ApiRoute> JoinCodeEvent;
     public readonly Func<CodeEvent, ApiRoute> CancelCodeEvent;
 
     public readonly Func<CodeEvent, ApiRoute> GetMembers;
     public readonly Func<CodeEvent, ApiRoute> LeaveCodeEvent;
     public readonly Func<Member, ApiRoute> RemoveMember;
 
+
     internal ApiLinks(string entrypoint) {
+      // TODO: worth refactoring to use this?
+      // Func<string, string> buildEndpoint = endpoint =>
+      //   $"{entrypoint}/${endpoint}";
+
       GetCodeEvent = codeEvent => new ApiRoute(
         $"{entrypoint}/{codeEvent.Id}",
         HttpMethod.Get
@@ -25,6 +29,11 @@ namespace CodeEventsAPI.Controllers {
       CancelCodeEvent = codeEvent => new ApiRoute(
         $"{entrypoint}/{codeEvent.Id}",
         HttpMethod.Delete
+      );
+
+      JoinCodeEvent = codeEvent => new ApiRoute(
+        $"{entrypoint}/{codeEvent.Id}/members",
+        HttpMethod.Post
       );
 
       GetMembers = codeEvent => new ApiRoute(
@@ -60,8 +69,8 @@ namespace CodeEventsAPI.Controllers {
       _codeEventService = codeEventService;
     }
 
-    [AllowAnonymous]
     [HttpGet]
+    [AllowAnonymous]
     public ActionResult GetCodeEvents() {
       return Ok(_codeEventService.GetAllCodeEvents());
     }
@@ -86,7 +95,8 @@ namespace CodeEventsAPI.Controllers {
         _codeEventService.IsUserAMember(codeEventId, HttpContext.User);
       if (!userIsMember) return Forbid();
 
-      var codeEventDto = _codeEventService.GetCodeEventById(codeEventId, HttpContext.User);
+      var codeEventDto =
+        _codeEventService.GetCodeEventById(codeEventId, HttpContext.User);
       if (codeEventDto == null) return NotFound();
 
       return Ok(codeEventDto);
