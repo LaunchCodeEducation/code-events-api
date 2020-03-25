@@ -6,53 +6,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CodeEventsAPI.Controllers {
-  public struct ApiLinks {
-    public readonly Func<CodeEvent, ApiRoute> GetCodeEvent;
-    public readonly Func<CodeEvent, ApiRoute> JoinCodeEvent;
-    public readonly Func<CodeEvent, ApiRoute> CancelCodeEvent;
-
-    public readonly Func<CodeEvent, ApiRoute> GetMembers;
-    public readonly Func<CodeEvent, ApiRoute> LeaveCodeEvent;
-    public readonly Func<Member, ApiRoute> RemoveMember;
-
-
-    internal ApiLinks(string entrypoint) {
-      // TODO: worth refactoring to use this?
-      // Func<string, string> buildEndpoint = endpoint =>
-      //   $"{entrypoint}/${endpoint}";
-
-      GetCodeEvent = codeEvent => new ApiRoute(
-        $"{entrypoint}/{codeEvent.Id}",
-        HttpMethod.Get
-      );
-
-      CancelCodeEvent = codeEvent => new ApiRoute(
-        $"{entrypoint}/{codeEvent.Id}",
-        HttpMethod.Delete
-      );
-
-      JoinCodeEvent = codeEvent => new ApiRoute(
-        $"{entrypoint}/{codeEvent.Id}/members",
-        HttpMethod.Post
-      );
-
-      GetMembers = codeEvent => new ApiRoute(
-        $"{entrypoint}/{codeEvent.Id}/members",
-        HttpMethod.Get
-      );
-
-      LeaveCodeEvent = codeEvent => new ApiRoute(
-        $"{entrypoint}/{codeEvent.Id}/members",
-        HttpMethod.Delete
-      );
-
-      RemoveMember = member => new ApiRoute(
-        $"{entrypoint}/{member.CodeEvent.Id}/members/{member.Id}",
-        HttpMethod.Delete
-      );
-    }
-  }
-
   [Authorize]
   [ApiController]
   [Route(Entrypoint)]
@@ -61,7 +14,7 @@ namespace CodeEventsAPI.Controllers {
   public class CodeEventsController : ControllerBase {
     public const string Entrypoint = "/api/events";
 
-    public static readonly ApiLinks Routes = new ApiLinks(Entrypoint);
+    public static readonly ApiLinks ResourceLinks = new ApiLinks(Entrypoint);
 
     private readonly CodeEventService _codeEventService;
 

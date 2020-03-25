@@ -62,7 +62,7 @@ namespace CodeEventsAPI.Models {
       var memberDtoBase = new MemberDto(member);
       memberDtoBase.Email = member.User.Email;
       memberDtoBase.Links = new {
-        Remove = CodeEventsController.Routes.RemoveMember(member),
+        Remove = CodeEventsController.ResourceLinks.RemoveMember(member),
       };
 
       return memberDtoBase;

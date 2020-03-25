@@ -34,8 +34,8 @@ namespace CodeEventsAPI.Models {
       Title = codeEvent.Title;
       Date = codeEvent.Date;
       Links = new {
-        CodeEvent = CodeEventsController.Routes.GetCodeEvent(codeEvent),
-        Join = CodeEventsController.Routes.JoinCodeEvent(codeEvent),
+        CodeEvent = CodeEventsController.ResourceLinks.GetCodeEvent(codeEvent),
+        Join = CodeEventsController.ResourceLinks.JoinCodeEvent(codeEvent),
       };
     }
   }
@@ -47,12 +47,12 @@ namespace CodeEventsAPI.Models {
     private MemberCodeEventDto(CodeEvent codeEvent)
       : base(codeEvent) {
       Description = codeEvent.Description;
-      Links["Members"] = CodeEventsController.Routes.GetMembers(codeEvent);
+      Links["Members"] = CodeEventsController.ResourceLinks.GetMembers(codeEvent);
     }
 
     public static MemberCodeEventDto ForMember(CodeEvent codeEvent) {
       var baseCodeEventDto = new MemberCodeEventDto(codeEvent);
-      baseCodeEventDto.Links["Leave"] = CodeEventsController.Routes
+      baseCodeEventDto.Links["Leave"] = CodeEventsController.ResourceLinks
         .LeaveCodeEvent(codeEvent);
 
       return baseCodeEventDto;
@@ -60,7 +60,7 @@ namespace CodeEventsAPI.Models {
 
     public static MemberCodeEventDto ForOwner(CodeEvent codeEvent) {
       var baseCodeEventDto = new MemberCodeEventDto(codeEvent);
-      baseCodeEventDto.Links["Cancel"] = CodeEventsController.Routes
+      baseCodeEventDto.Links["Cancel"] = CodeEventsController.ResourceLinks
         .CancelCodeEvent(codeEvent);
 
       return baseCodeEventDto;
