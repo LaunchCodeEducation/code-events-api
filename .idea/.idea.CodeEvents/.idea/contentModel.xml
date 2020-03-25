@@ -10,8 +10,8 @@
         <e p="bin" t="ExcludeRecursive" />
         <e p="CodeEventsAPI.csproj" t="IncludeRecursive" />
         <e p="Controllers" t="Include">
-          <e p="ApiRoute.cs" t="Include" />
           <e p="CodeEventsController.cs" t="Include" />
+          <e p="ResourceLinks.cs" t="Include" />
         </e>
         <e p="Data" t="Include">
           <e p="CodeEventsDBContext.cs" t="Include" />

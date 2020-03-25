@@ -14,7 +14,7 @@ namespace CodeEventsAPI.Controllers {
     }
   }
 
-  public struct ApiLinks {
+  public struct ResourceLinks {
     public readonly Func<CodeEvent, ApiRoute> GetCodeEvent;
     public readonly Func<CodeEvent, ApiRoute> JoinCodeEvent;
     public readonly Func<CodeEvent, ApiRoute> CancelCodeEvent;
@@ -24,7 +24,7 @@ namespace CodeEventsAPI.Controllers {
     public readonly Func<Member, ApiRoute> RemoveMember;
 
 
-    internal ApiLinks(string entrypoint) {
+    internal ResourceLinks(string entrypoint) {
       // TODO: worth refactoring to use this?
       // Func<string, string> buildEndpoint = endpoint =>
       //   $"{entrypoint}/${endpoint}";

@@ -14,7 +14,7 @@ namespace CodeEventsAPI.Controllers {
   public class CodeEventsController : ControllerBase {
     public const string Entrypoint = "/api/events";
 
-    public static readonly ApiLinks ResourceLinks = new ApiLinks(Entrypoint);
+    public static readonly ResourceLinks ResourceLinks = new ResourceLinks(Entrypoint);
 
     private readonly CodeEventService _codeEventService;
 
