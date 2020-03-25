@@ -46,7 +46,7 @@ namespace CodeEventsAPI.Controllers {
     public ActionResult GetCodeEvent(long codeEventId) {
       var userIsMember =
         _codeEventService.IsUserAMember(codeEventId, HttpContext.User);
-      if (!userIsMember) return Forbid();
+      if (!userIsMember) return StatusCode(403);
 
       var codeEventDto =
         _codeEventService.GetCodeEventById(codeEventId, HttpContext.User);
@@ -60,7 +60,7 @@ namespace CodeEventsAPI.Controllers {
     public ActionResult GetMembers(long codeEventId) {
       var userIsMember =
         _codeEventService.IsUserAMember(codeEventId, HttpContext.User);
-      if (!userIsMember) return Forbid();
+      if (!userIsMember) return StatusCode(403);
 
       return Ok(
         _codeEventService.GetMembersList(codeEventId, HttpContext.User)
@@ -88,7 +88,7 @@ namespace CodeEventsAPI.Controllers {
     public ActionResult LeaveCodeEvent(long codeEventId) {
       var userIsMember =
         _codeEventService.IsUserAMember(codeEventId, HttpContext.User);
-      if (!userIsMember) return Forbid();
+      if (!userIsMember) return StatusCode(403);
 
       _codeEventService.LeaveCodeEvent(codeEventId, HttpContext.User);
 
@@ -108,7 +108,7 @@ namespace CodeEventsAPI.Controllers {
         codeEventId,
         HttpContext.User
       );
-      if (!isOwner) return Forbid();
+      if (!isOwner) return StatusCode(403);
 
       var memberExists = _codeEventService.DoesMemberExist(memberId);
       if (!memberExists) return NotFound();
@@ -125,7 +125,7 @@ namespace CodeEventsAPI.Controllers {
         codeEventId,
         HttpContext.User
       );
-      if (!isOwner) return Forbid();
+      if (!isOwner) return StatusCode(403);
 
       _codeEventService.CancelCodeEvent(codeEventId);
 
