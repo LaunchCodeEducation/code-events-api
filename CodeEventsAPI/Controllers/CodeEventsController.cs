@@ -1,8 +1,8 @@
 using System.Net.Mime;
 using CodeEventsAPI.Models;
 using CodeEventsAPI.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace CodeEventsAPI.Controllers {
@@ -29,7 +29,7 @@ namespace CodeEventsAPI.Controllers {
       OperationId = "GetCodeEvents",
       Summary = "Retrieve all Code Events",
       Description = "Publicly available",
-      Tags = new[] { "CodeEvent", "Public" }
+      Tags = new[] { SwaggerConfig.PublicTag }
     )]
     [SwaggerResponse(
       200,
@@ -44,15 +44,19 @@ namespace CodeEventsAPI.Controllers {
     [SwaggerOperation(
       OperationId = "CreateCodeEvent",
       Summary = "Create a new Code Event",
-      Description = "Requires authentication",
-      Tags = new[] { "CodeEvent", "Protected" }
+      Description = "Requires an authenticated User",
+      Tags = new[] { SwaggerConfig.RequireUserTag }
     )]
     [SwaggerResponse(
       201,
       "Returns new public Code Event data",
       Type = typeof(PublicCodeEventDto)
     )]
-    [SwaggerResponse(400, "Invalid or missing Code Event data", Type = null)]
+    [SwaggerResponse(
+      400,
+      "Invalid or missing Code Event data",
+      Type = typeof(string)
+    )]
     public ActionResult CreateCodeEvent(
       [FromBody, SwaggerParameter("New Code Event data", Required = true)]
       NewCodeEventDto newCodeEvent
@@ -75,15 +79,19 @@ namespace CodeEventsAPI.Controllers {
       OperationId = "GetCodeEvent",
       Summary = "Retrieve Code Event data",
       Description = "Requires an authenticated Member of the Code Event",
-      Tags = new[] { "CodeEvent", "Protected", "Members Only" }
+      Tags = new[] { SwaggerConfig.RequireMemberTag, SwaggerConfig.RequireOwnerTag }
     )]
     [SwaggerResponse(
       200,
       "Complete Code Event data with links available to the requesting Member's Role",
       Type = typeof(MemberCodeEventDto)
     )]
-    [SwaggerResponse(404, "Code Event not found", Type = null)]
-    [SwaggerResponse(403, "Not a Member of the Code Event", Type = null)]
+    [SwaggerResponse(
+      403,
+      "Not a Member of the Code Event",
+      Type = typeof(string)
+    )]
+    [SwaggerResponse(404, "Code Event not found", Type = typeof(string))]
     public ActionResult GetCodeEvent(
       [FromRoute, SwaggerParameter("The ID of the Code Event", Required = true)]
       long codeEventId
@@ -99,10 +107,20 @@ namespace CodeEventsAPI.Controllers {
       return Ok(codeEventDto);
     }
 
-    // TODO: swagger
     [HttpDelete]
     [Route("{codeEventId}")]
-    public ActionResult CancelCodeEvent([FromRoute] long codeEventId) {
+    [SwaggerOperation(
+      OperationId = "CancelCodeEvent",
+      Summary = "Cancel a Code Event",
+      Description = "Requires an authenticated Owner of the Code Event",
+      Tags = new[] { SwaggerConfig.RequireOwnerTag }
+    )]
+    [SwaggerResponse(204, "No content success", Type = null)]
+    [SwaggerResponse(403, "Not an Owner of the Code Event", Type = null)]
+    public ActionResult CancelCodeEvent(
+      [FromRoute, SwaggerParameter("The ID of the Code Event", Required = true)]
+      long codeEventId
+    ) {
       var isOwner = _codeEventService.IsUserAnOwner(
         codeEventId,
         HttpContext.User

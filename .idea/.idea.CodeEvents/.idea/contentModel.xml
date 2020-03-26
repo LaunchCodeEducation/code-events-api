@@ -13,6 +13,7 @@
           <e p="CodeEventsController.cs" t="Include" />
           <e p="MembersController.cs" t="Include" />
           <e p="ResourceLinks.cs" t="Include" />
+          <e p="SwaggerConfig.cs" t="Include" />
         </e>
         <e p="Data" t="Include">
           <e p="CodeEventsDBContext.cs" t="Include" />
