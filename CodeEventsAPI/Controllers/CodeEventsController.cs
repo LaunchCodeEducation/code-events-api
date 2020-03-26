@@ -3,6 +3,7 @@ using CodeEventsAPI.Models;
 using CodeEventsAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace CodeEventsAPI.Controllers {
   [Authorize]
@@ -24,13 +25,37 @@ namespace CodeEventsAPI.Controllers {
 
     [HttpGet]
     [AllowAnonymous]
+    [SwaggerOperation(
+      OperationId = "GetCodeEvents",
+      Summary = "Retrieve all Code Events",
+      Description = "Publicly available",
+      Tags = new[] { "CodeEvent", "Public" }
+    )]
+    [SwaggerResponse(
+      200,
+      "List of public Code Event data",
+      Type = typeof(PublicCodeEventDto)
+    )]
     public ActionResult GetCodeEvents() {
       return Ok(_codeEventService.GetAllCodeEvents());
     }
 
     [HttpPost]
+    [SwaggerOperation(
+      OperationId = "CreateCodeEvent",
+      Summary = "Create a new Code Event",
+      Description = "Requires authentication",
+      Tags = new[] { "CodeEvent", "Protected" }
+    )]
+    [SwaggerResponse(
+      201,
+      "Returns new public Code Event data",
+      Type = typeof(PublicCodeEventDto)
+    )]
+    [SwaggerResponse(400, "Invalid or missing Code Event data", Type = null)]
     public ActionResult CreateCodeEvent(
-      [FromBody] NewCodeEventDto newCodeEvent
+      [FromBody, SwaggerParameter("New Code Event data", Required = true)]
+      NewCodeEventDto newCodeEvent
     ) {
       var codeEvent = _codeEventService.RegisterCodeEvent(
         newCodeEvent,
@@ -46,7 +71,23 @@ namespace CodeEventsAPI.Controllers {
 
     [HttpGet]
     [Route("{codeEventId}")]
-    public ActionResult GetCodeEvent([FromRoute] long codeEventId) {
+    [SwaggerOperation(
+      OperationId = "GetCodeEvent",
+      Summary = "Retrieve Code Event data",
+      Description = "Requires an authenticated Member of the Code Event",
+      Tags = new[] { "CodeEvent", "Protected", "Members Only" }
+    )]
+    [SwaggerResponse(
+      200,
+      "Complete Code Event data with links available to the requesting Member's Role",
+      Type = typeof(MemberCodeEventDto)
+    )]
+    [SwaggerResponse(404, "Code Event not found", Type = null)]
+    [SwaggerResponse(403, "Not a Member of the Code Event", Type = null)]
+    public ActionResult GetCodeEvent(
+      [FromRoute, SwaggerParameter("The ID of the Code Event", Required = true)]
+      long codeEventId
+    ) {
       var userIsMember =
         _codeEventService.IsUserAMember(codeEventId, HttpContext.User);
       if (!userIsMember) return StatusCode(403);

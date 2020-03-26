@@ -47,14 +47,17 @@ namespace CodeEventsAPI {
 
       // configure swagger documentation
       services.AddSwaggerGen(
-        options => options.SwaggerDoc(
-          "v1",
-          new OpenApiInfo {
-            Version = "v1",
-            Title = "Code Events API",
-            Description = "REST API for managing Code Events"
-          }
-        )
+        options => {
+          options.SwaggerDoc(
+            "v1",
+            new OpenApiInfo {
+              Version = "v1",
+              Title = "Code Events API",
+              Description = "REST API for managing Code Events"
+            }
+          );
+          options.EnableAnnotations();
+        }
       );
     }
 
