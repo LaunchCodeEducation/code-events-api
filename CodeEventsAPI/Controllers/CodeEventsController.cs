@@ -29,7 +29,9 @@ namespace CodeEventsAPI.Controllers {
     }
 
     [HttpPost]
-    public ActionResult CreateCodeEvent(NewCodeEventDto newCodeEvent) {
+    public ActionResult CreateCodeEvent(
+      [FromBody] NewCodeEventDto newCodeEvent
+    ) {
       var codeEvent = _codeEventService.RegisterCodeEvent(
         newCodeEvent,
         HttpContext.User
@@ -44,7 +46,7 @@ namespace CodeEventsAPI.Controllers {
 
     [HttpGet]
     [Route("{codeEventId}")]
-    public ActionResult GetCodeEvent(long codeEventId) {
+    public ActionResult GetCodeEvent([FromRoute] long codeEventId) {
       var userIsMember =
         _codeEventService.IsUserAMember(codeEventId, HttpContext.User);
       if (!userIsMember) return StatusCode(403);
@@ -58,7 +60,7 @@ namespace CodeEventsAPI.Controllers {
 
     [HttpGet]
     [Route("{codeEventId}/members")]
-    public ActionResult GetMembers(long codeEventId) {
+    public ActionResult GetMembers([FromRoute] long codeEventId) {
       var userIsMember =
         _codeEventService.IsUserAMember(codeEventId, HttpContext.User);
       if (!userIsMember) return StatusCode(403);
@@ -70,7 +72,7 @@ namespace CodeEventsAPI.Controllers {
 
     [HttpPost]
     [Route("{codeEventId}/members")]
-    public ActionResult JoinEvent(long codeEventId) {
+    public ActionResult JoinEvent([FromRoute] long codeEventId) {
       var userCanRegister =
         _codeEventService.CanUserRegisterAsMember(
           codeEventId,
@@ -86,7 +88,7 @@ namespace CodeEventsAPI.Controllers {
 
     [HttpDelete]
     [Route("{codeEventId}/members")]
-    public ActionResult LeaveCodeEvent(long codeEventId) {
+    public ActionResult LeaveCodeEvent([FromRoute] long codeEventId) {
       var userIsMember =
         _codeEventService.IsUserAMember(codeEventId, HttpContext.User);
       if (!userIsMember) return StatusCode(403);
@@ -108,7 +110,10 @@ namespace CodeEventsAPI.Controllers {
      */
     [HttpDelete]
     [Route("{codeEventId}/members/{memberId}")]
-    public ActionResult RemoveMember(long codeEventId, long memberId) {
+    public ActionResult RemoveMember(
+      [FromRoute] long codeEventId,
+      [FromRoute] long memberId
+    ) {
       var isOwner = _codeEventService.IsUserAnOwner(
         codeEventId,
         HttpContext.User
@@ -125,7 +130,7 @@ namespace CodeEventsAPI.Controllers {
 
     [HttpDelete]
     [Route("{codeEventId}")]
-    public ActionResult CancelCodeEvent(long codeEventId) {
+    public ActionResult CancelCodeEvent([FromRoute] long codeEventId) {
       var isOwner = _codeEventService.IsUserAnOwner(
         codeEventId,
         HttpContext.User
