@@ -1,6 +1,5 @@
 using CodeEventsAPI.Data;
 using CodeEventsAPI.Middleware;
-using CodeEventsAPI.Models;
 using CodeEventsAPI.Services;
 using CodeEventsAPI.Swagger;
 using Microsoft.AspNetCore.Builder;
@@ -61,7 +60,6 @@ namespace CodeEventsAPI {
           options.EnableAnnotations();
           // req/res body examples
           options.ExampleFilters();
-          options.GeneratePolymorphicSchemas();
         }
       );
 
