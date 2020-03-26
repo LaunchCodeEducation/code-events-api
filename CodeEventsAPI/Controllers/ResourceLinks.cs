@@ -9,27 +9,21 @@ namespace CodeEventsAPI.Controllers {
 
     public HttpMethod Method { get; }
 
-    public ResourceLink(string path, HttpMethod method) {
+    internal ResourceLink(string path, HttpMethod method) {
       Method = method;
       Href = $"{ServerConfig.Origin}{path}";
     }
   }
 
-  public struct ResourceLinks {
+  public struct CodeEventResourceLinks {
     public readonly Func<CodeEvent, ResourceLink> GetCodeEvent;
-    public readonly Func<CodeEvent, ResourceLink> JoinCodeEvent;
     public readonly Func<CodeEvent, ResourceLink> CancelCodeEvent;
 
-    public readonly Func<CodeEvent, ResourceLink> GetMembers;
-    public readonly Func<CodeEvent, ResourceLink> LeaveCodeEvent;
-    public readonly Func<Member, ResourceLink> RemoveMember;
+    // private static Func<string, string> ConfigureEndpointBuilder(
+    //   string entrypoint
+    // ) => endpoint => $"{entrypoint}/${endpoint}";
 
-
-    internal ResourceLinks(string entrypoint) {
-      // TODO: worth refactoring to use this?
-      // Func<string, string> buildEndpoint = endpoint =>
-      //   $"{entrypoint}/${endpoint}";
-
+    internal CodeEventResourceLinks(string entrypoint) {
       GetCodeEvent = codeEvent => new ResourceLink(
         $"{entrypoint}/{codeEvent.Id}",
         HttpMethod.Get
@@ -39,15 +33,24 @@ namespace CodeEventsAPI.Controllers {
         $"{entrypoint}/{codeEvent.Id}",
         HttpMethod.Delete
       );
+    }
+  }
+
+  public struct MemberResourceLinks {
+    public readonly Func<CodeEvent, ResourceLink> GetMembers;
+    public readonly Func<CodeEvent, ResourceLink> JoinCodeEvent;
+    public readonly Func<CodeEvent, ResourceLink> LeaveCodeEvent;
+    public readonly Func<Member, ResourceLink> RemoveMember;
+
+    internal MemberResourceLinks(string entrypoint) {
+      GetMembers = codeEvent => new ResourceLink(
+        $"{entrypoint}/{codeEvent.Id}/members",
+        HttpMethod.Get
+      );
 
       JoinCodeEvent = codeEvent => new ResourceLink(
         $"{entrypoint}/{codeEvent.Id}/members",
         HttpMethod.Post
-      );
-
-      GetMembers = codeEvent => new ResourceLink(
-        $"{entrypoint}/{codeEvent.Id}/members",
-        HttpMethod.Get
       );
 
       LeaveCodeEvent = codeEvent => new ResourceLink(

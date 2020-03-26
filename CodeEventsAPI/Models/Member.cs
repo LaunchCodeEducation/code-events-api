@@ -4,8 +4,8 @@ using CodeEventsAPI.Controllers;
 
 namespace CodeEventsAPI.Models {
   public enum MemberRole {
-    Owner, // event.view, event.edit, event.delete, event.member.view, event.member.remove
-    Member // event.view, event.member.view:username, event.member.remove:self
+    Owner,
+    Member
   }
 
   public class Member {
@@ -64,7 +64,7 @@ namespace CodeEventsAPI.Models {
       memberDtoBase.Email = member.User.Email;
       if (member.Id != owner.Id) {
         memberDtoBase.Links.Remove =
-          CodeEventsController.ResourceLinks.RemoveMember(member);
+          MembersController.ResourceLinks.RemoveMember(member);
       }
 
       return memberDtoBase;

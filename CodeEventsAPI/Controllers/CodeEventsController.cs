@@ -14,8 +14,8 @@ namespace CodeEventsAPI.Controllers {
   public class CodeEventsController : ControllerBase {
     public const string Entrypoint = "/api/events";
 
-    public static readonly ResourceLinks ResourceLinks =
-      new ResourceLinks(Entrypoint);
+    public static readonly CodeEventResourceLinks ResourceLinks =
+      new CodeEventResourceLinks(Entrypoint);
 
     private readonly CodeEventService _codeEventService;
 
@@ -99,76 +99,7 @@ namespace CodeEventsAPI.Controllers {
       return Ok(codeEventDto);
     }
 
-    [HttpGet]
-    [Route("{codeEventId}/members")]
-    public ActionResult GetMembers([FromRoute] long codeEventId) {
-      var userIsMember =
-        _codeEventService.IsUserAMember(codeEventId, HttpContext.User);
-      if (!userIsMember) return StatusCode(403);
-
-      return Ok(
-        _codeEventService.GetMembersList(codeEventId, HttpContext.User)
-      );
-    }
-
-    [HttpPost]
-    [Route("{codeEventId}/members")]
-    public ActionResult JoinEvent([FromRoute] long codeEventId) {
-      var userCanRegister =
-        _codeEventService.CanUserRegisterAsMember(
-          codeEventId,
-          HttpContext.User
-        );
-
-      if (!userCanRegister) return BadRequest();
-
-      _codeEventService.JoinCodeEvent(codeEventId, HttpContext.User);
-
-      return NoContent();
-    }
-
-    [HttpDelete]
-    [Route("{codeEventId}/members")]
-    public ActionResult LeaveCodeEvent([FromRoute] long codeEventId) {
-      var userIsMember =
-        _codeEventService.IsUserAMember(codeEventId, HttpContext.User);
-      if (!userIsMember) return StatusCode(403);
-
-      var userIsOwner =
-        _codeEventService.IsUserAnOwner(codeEventId, HttpContext.User);
-      if (userIsOwner) return BadRequest();
-
-      _codeEventService.LeaveCodeEvent(codeEventId, HttpContext.User);
-
-      return NoContent();
-    }
-
-    /**
-     * checks:
-     * - code event exists
-     * - if memberId not null-> authed user is owner
-     * - if memberId null -> authed user is a member
-     */
-    [HttpDelete]
-    [Route("{codeEventId}/members/{memberId}")]
-    public ActionResult RemoveMember(
-      [FromRoute] long codeEventId,
-      [FromRoute] long memberId
-    ) {
-      var isOwner = _codeEventService.IsUserAnOwner(
-        codeEventId,
-        HttpContext.User
-      );
-      if (!isOwner) return StatusCode(403);
-
-      var memberExists = _codeEventService.DoesMemberExist(memberId);
-      if (!memberExists) return NotFound();
-
-      _codeEventService.RemoveMember(memberId);
-
-      return NoContent();
-    }
-
+    // TODO: swagger
     [HttpDelete]
     [Route("{codeEventId}")]
     public ActionResult CancelCodeEvent([FromRoute] long codeEventId) {

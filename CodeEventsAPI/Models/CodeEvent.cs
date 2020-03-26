@@ -44,7 +44,7 @@ namespace CodeEventsAPI.Models {
   public class PublicCodeEventDto : BaseCodeEventDto {
     public PublicCodeEventDto(CodeEvent codeEvent)
       : base(codeEvent) {
-      Links.Join = CodeEventsController.ResourceLinks.JoinCodeEvent(codeEvent);
+      Links.Join = MembersController.ResourceLinks.JoinCodeEvent(codeEvent);
     }
   }
 
@@ -54,12 +54,12 @@ namespace CodeEventsAPI.Models {
     private MemberCodeEventDto(CodeEvent codeEvent)
       : base(codeEvent) {
       Description = codeEvent.Description;
-      Links.Members = CodeEventsController.ResourceLinks.GetMembers(codeEvent);
+      Links.Members = MembersController.ResourceLinks.GetMembers(codeEvent);
     }
 
     public static MemberCodeEventDto ForMember(CodeEvent codeEvent) {
       var baseCodeEventDto = new MemberCodeEventDto(codeEvent);
-      baseCodeEventDto.Links.Leave = CodeEventsController.ResourceLinks
+      baseCodeEventDto.Links.Leave = MembersController.ResourceLinks
         .LeaveCodeEvent(codeEvent);
 
       return baseCodeEventDto;
