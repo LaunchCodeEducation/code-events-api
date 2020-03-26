@@ -13,13 +13,9 @@ namespace CodeEventsAPI.Middleware {
       _next = next;
     }
 
-    public Task InvokeAsync(
-      HttpContext context,
-      CodeEventsDbContext dbContext
-    ) {
+    public Task InvokeAsync(HttpContext context, CodeEventsDbContext dbContext) {
       var authedUser = context.User;
-      if (!authedUser.Identity.IsAuthenticated ||
-          authedUser.FindFirstValue("userId") != null) {
+      if (!authedUser.Identity.IsAuthenticated || authedUser.FindFirstValue("userId") != null) {
         return _next(context);
       }
 

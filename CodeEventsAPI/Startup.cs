@@ -1,5 +1,6 @@
 using CodeEventsAPI.Data;
 using CodeEventsAPI.Middleware;
+using CodeEventsAPI.Models;
 using CodeEventsAPI.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -10,6 +11,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.AzureADB2C.UI;
 using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace CodeEventsAPI {
   public class Startup {
@@ -33,21 +35,19 @@ namespace CodeEventsAPI {
 
       // configure DB
       services.AddDbContext<CodeEventsDbContext>(
-        dbOptions =>
-          dbOptions.UseMySql(Configuration.GetConnectionString("Default"))
+        dbOptions => dbOptions.UseMySql(Configuration.GetConnectionString("Default"))
       );
 
       // configure ADB2C auth handling
       services.AddAuthentication(AzureADB2CDefaults.AuthenticationScheme)
         .AddAzureADB2C(options => Configuration.Bind("AzureAdB2C", options));
       services.AddOptions();
-      services.Configure<AzureADB2COptions>(
-        Configuration.GetSection("AzureAdB2C")
-      );
+      services.Configure<AzureADB2COptions>(Configuration.GetSection("AzureAdB2C"));
 
       // configure swagger documentation
       services.AddSwaggerGen(
         options => {
+          // generate the swagger doc
           options.SwaggerDoc(
             "v1",
             new OpenApiInfo {
@@ -56,9 +56,22 @@ namespace CodeEventsAPI {
               Description = "REST API for managing Code Events"
             }
           );
+          // req/res annotations
           options.EnableAnnotations();
+          // req/res body examples
+          options.ExampleFilters();
+          options.GeneratePolymorphicSchemas();
         }
       );
+
+      // register swagger example response objects
+      services.AddSwaggerExamplesFromAssemblyOf<NewCodeEventExample>();
+      services.AddSwaggerExamplesFromAssemblyOf<PublicCodeEventExample>();
+      services.AddSwaggerExamplesFromAssemblyOf<PublicCodeEventExamples>();
+      services.AddSwaggerExamplesFromAssemblyOf<MemberCodeEventExample>();
+      services.AddSwaggerExamplesFromAssemblyOf<MemberCodeEventExamples>();
+      services.AddSwaggerExamplesFromAssemblyOf<MemberExample>();
+      services.AddSwaggerExamplesFromAssemblyOf<MemberExamples>();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
@@ -72,9 +85,7 @@ namespace CodeEventsAPI {
       app.UseMiddleware<RegisterNewUserMiddleware>();
       app.UseMiddleware<AddUserIdClaimMiddleware>();
 
-      app.UseEndpoints(
-        endpoints => endpoints.MapControllers()
-      ); // continue to Controller handlers
+      app.UseEndpoints(endpoints => endpoints.MapControllers()); // continue to Controller handlers
 
       // configure swagger UI page
       app.UseSwagger();
@@ -90,8 +101,7 @@ namespace CodeEventsAPI {
       using var migrationSvcScope = app.ApplicationServices
         .GetRequiredService<IServiceScopeFactory>()
         .CreateScope();
-      migrationSvcScope.ServiceProvider.GetService<CodeEventsDbContext>()
-        .Database.Migrate();
+      migrationSvcScope.ServiceProvider.GetService<CodeEventsDbContext>().Database.Migrate();
     }
   }
 }

@@ -13,10 +13,7 @@ namespace CodeEventsAPI.Middleware {
       _next = next;
     }
 
-    public Task InvokeAsync(
-      HttpContext context,
-      CodeEventsDbContext dbContext
-    ) {
+    public Task InvokeAsync(HttpContext context, CodeEventsDbContext dbContext) {
       var authedUser = context.User;
 
       if (!authedUser.Identity.IsAuthenticated) {
@@ -27,8 +24,7 @@ namespace CodeEventsAPI.Middleware {
 
       var user = new User(authedUser);
 
-      var userExists =
-        dbContext.Users.Count(u => u.AzureOId == user.AzureOId) == 1;
+      var userExists = dbContext.Users.Count(u => u.AzureOId == user.AzureOId) == 1;
       if (userExists) return _next(context);
 
       dbContext.Users.Add(user);

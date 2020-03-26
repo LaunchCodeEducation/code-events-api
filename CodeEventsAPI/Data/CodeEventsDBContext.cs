@@ -16,13 +16,9 @@ namespace CodeEventsAPI.Data {
       base.OnModelCreating(modelBuilder);
 
       // -- USER --
-      modelBuilder.Entity<User>()
-        .HasIndex(member => member.AzureOId)
-        .IsUnique();
+      modelBuilder.Entity<User>().HasIndex(member => member.AzureOId).IsUnique();
 
-      modelBuilder.Entity<User>()
-        .HasIndex(member => member.Username)
-        .IsUnique();
+      modelBuilder.Entity<User>().HasIndex(member => member.Username).IsUnique();
 
       modelBuilder.Entity<User>().HasIndex(member => member.Email).IsUnique();
 

@@ -32,9 +32,7 @@ namespace CodeEventsAPI {
             );
           }
         )
-        .ConfigureWebHostDefaults(
-          webBuilder => { webBuilder.UseStartup<Startup>(); }
-        );
+        .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
     }
   }
 }

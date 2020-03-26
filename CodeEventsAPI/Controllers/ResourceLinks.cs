@@ -24,10 +24,7 @@ namespace CodeEventsAPI.Controllers {
     // ) => endpoint => $"{entrypoint}/${endpoint}";
 
     internal CodeEventResourceLinks(string entrypoint) {
-      GetCodeEvent = codeEvent => new ResourceLink(
-        $"{entrypoint}/{codeEvent.Id}",
-        HttpMethod.Get
-      );
+      GetCodeEvent = codeEvent => new ResourceLink($"{entrypoint}/{codeEvent.Id}", HttpMethod.Get);
 
       CancelCodeEvent = codeEvent => new ResourceLink(
         $"{entrypoint}/{codeEvent.Id}",
@@ -59,7 +56,7 @@ namespace CodeEventsAPI.Controllers {
       );
 
       RemoveMember = member => new ResourceLink(
-        $"{entrypoint}/{member.CodeEvent.Id}/members/{member.Id}",
+        $"{entrypoint}/{member.CodeEventId}/members/{member.Id}",
         HttpMethod.Delete
       );
     }

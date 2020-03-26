@@ -1,6 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Dynamic;
+using System.Security.Cryptography;
 using CodeEventsAPI.Controllers;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace CodeEventsAPI.Models {
   public enum MemberRole {
@@ -50,6 +53,8 @@ namespace CodeEventsAPI.Models {
   }
 
   public class MemberDto {
+    internal MemberDto() { }
+
     private MemberDto(Member member) {
       Email = null;
       Links = new ExpandoObject();
@@ -62,17 +67,51 @@ namespace CodeEventsAPI.Models {
     public static MemberDto ForOwner(Member member, Member owner) {
       var memberDtoBase = new MemberDto(member);
       memberDtoBase.Email = member.User.Email;
+
       if (member.Id != owner.Id) {
-        memberDtoBase.Links.Remove =
-          MembersController.ResourceLinks.RemoveMember(member);
+        memberDtoBase.Links.Remove = MembersController.ResourceLinks.RemoveMember(member);
       }
 
       return memberDtoBase;
     }
 
-    public string Role { get; }
-    public string Username { get; }
-    public string Email { get; private set; }
-    public dynamic Links { get; private set; }
+    public string Role { get; internal set; }
+    public string Username { get; internal set; }
+    public string Email { get; internal set; }
+    public dynamic Links { get; internal set; }
+  }
+
+  public class MemberExample : IExamplesProvider<MemberDto> {
+    public MemberDto GetExamples() {
+      var memberMock = new Member {
+        Id = RandomNumberGenerator.GetInt32(1, 1000),
+        CodeEventId = RandomNumberGenerator.GetInt32(1, 1000)
+      };
+
+      return new MemberDto {
+        Email = "patrick@launchcode.org",
+        Username = "the-vampiire",
+        Role = MemberRole.Member.ToString(),
+        Links = new { Remove = MembersController.ResourceLinks.RemoveMember(memberMock) },
+      };
+    }
+  }
+
+  public class MemberExamples : IExamplesProvider<List<MemberDto>> {
+    public List<MemberDto> GetExamples() {
+      var exampleGenerator = new MemberExample();
+
+      var firstExample = exampleGenerator.GetExamples();
+
+      var secondExample = exampleGenerator.GetExamples();
+      secondExample.Email = "paul@launchcode.org";
+      secondExample.Username = "pdmxdd";
+      secondExample.Role = MemberRole.Owner.ToString();
+
+      return new List<MemberDto> {
+        firstExample,
+        secondExample,
+      };
+    }
   }
 }
