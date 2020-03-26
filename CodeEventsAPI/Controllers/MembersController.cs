@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Net.Mime;
 using CodeEventsAPI.Models;
 using CodeEventsAPI.Services;
+using CodeEventsAPI.Swagger;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -31,7 +32,7 @@ namespace CodeEventsAPI.Controllers {
 Requires an authenticated Member.
 The Member data will differ depending on the requesting Member's Role
 ",
-      Tags = new[] { SwaggerConfig.RequireMemberTag, SwaggerConfig.RequireOwnerTag }
+      Tags = new[] { SwaggerTags.RequireMemberTag, SwaggerTags.RequireOwnerTag }
     )]
     [SwaggerResponse(
       200,
@@ -58,7 +59,7 @@ Owner Role: complete data (username, role, email, and links.remove)
       OperationId = "JoinCodeEvent",
       Summary = "Join a Code Event",
       Description = "Requires an authenticated User",
-      Tags = new[] { SwaggerConfig.RequireUserTag, }
+      Tags = new[] { SwaggerTags.RequireUserTag, }
     )]
     [ProducesResponseType(204)] // suppress default swagger 200 response code
     [SwaggerResponse(204, "No content success", Type = null)]
@@ -82,7 +83,7 @@ Owner Role: complete data (username, role, email, and links.remove)
       OperationId = "LeaveCodeEvent",
       Summary = "Leave a Code Event",
       Description = "Requires an authenticated Member",
-      Tags = new[] { SwaggerConfig.RequireMemberTag }
+      Tags = new[] { SwaggerTags.RequireMemberTag }
     )]
     [ProducesResponseType(204)] // suppress default swagger 200 response code
     [SwaggerResponse(204, "No content success", Type = null)]
@@ -109,7 +110,7 @@ Owner Role: complete data (username, role, email, and links.remove)
       OperationId = "RemoveMember",
       Summary = "Remove a Member from a Code Event",
       Description = "Requires an authenticated Owner",
-      Tags = new[] { SwaggerConfig.RequireOwnerTag }
+      Tags = new[] { SwaggerTags.RequireOwnerTag }
     )]
     [ProducesResponseType(204)] // suppress default swagger 200 response code
     [SwaggerResponse(204, "No content success", Type = null)]

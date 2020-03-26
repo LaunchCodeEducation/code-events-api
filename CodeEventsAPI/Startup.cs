@@ -2,6 +2,7 @@ using CodeEventsAPI.Data;
 using CodeEventsAPI.Middleware;
 using CodeEventsAPI.Models;
 using CodeEventsAPI.Services;
+using CodeEventsAPI.Swagger;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;

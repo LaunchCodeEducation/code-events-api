@@ -13,7 +13,6 @@
           <e p="CodeEventsController.cs" t="Include" />
           <e p="MembersController.cs" t="Include" />
           <e p="ResourceLinks.cs" t="Include" />
-          <e p="SwaggerConfig.cs" t="Include" />
         </e>
         <e p="Data" t="Include">
           <e p="CodeEventsDBContext.cs" t="Include" />
@@ -52,6 +51,11 @@
           <e p="CodeEventService.cs" t="Include" />
         </e>
         <e p="Startup.cs" t="Include" />
+        <e p="Swagger" t="Include">
+          <e p="CodeEventExamples.cs" t="Include" />
+          <e p="MemberExamples.cs" t="Include" />
+          <e p="SwaggerTags.cs" t="Include" />
+        </e>
       </e>
       <e p="packages" t="ExcludeRecursive" />
     </e>

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Net.Mime;
 using CodeEventsAPI.Models;
 using CodeEventsAPI.Services;
+using CodeEventsAPI.Swagger;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Swashbuckle.AspNetCore.Annotations;
@@ -30,7 +31,7 @@ namespace CodeEventsAPI.Controllers {
       OperationId = "GetCodeEvents",
       Summary = "Retrieve all Code Events",
       Description = "Publicly available",
-      Tags = new[] { SwaggerConfig.PublicTag }
+      Tags = new[] { SwaggerTags.PublicTag }
     )]
     [SwaggerResponse(
       200,
@@ -46,7 +47,7 @@ namespace CodeEventsAPI.Controllers {
       OperationId = "CreateCodeEvent",
       Summary = "Create a new Code Event",
       Description = "Requires an authenticated User",
-      Tags = new[] { SwaggerConfig.RequireUserTag }
+      Tags = new[] { SwaggerTags.RequireUserTag }
     )]
     [SwaggerResponse(201, "Returns new public Code Event data", Type = typeof(PublicCodeEventDto))]
     [SwaggerResponse(400, "Invalid or missing Code Event data", Type = null)]
@@ -69,7 +70,7 @@ namespace CodeEventsAPI.Controllers {
       OperationId = "GetCodeEvent",
       Summary = "Retrieve Code Event data",
       Description = "Requires an authenticated Member or Owner of the Code Event",
-      Tags = new[] { SwaggerConfig.RequireMemberTag, SwaggerConfig.RequireOwnerTag }
+      Tags = new[] { SwaggerTags.RequireMemberTag, SwaggerTags.RequireOwnerTag }
     )]
     [SwaggerResponse(
       200,
@@ -101,7 +102,7 @@ Owner Role: links.cancel
       OperationId = "CancelCodeEvent",
       Summary = "Cancel a Code Event",
       Description = "Requires an authenticated Owner of the Code Event",
-      Tags = new[] { SwaggerConfig.RequireOwnerTag }
+      Tags = new[] { SwaggerTags.RequireOwnerTag }
     )]
     [ProducesResponseType(204)] // suppress default swagger 200 response code
     [SwaggerResponse(204, "No content success", Type = null)]
