@@ -102,8 +102,8 @@ namespace CodeEventsAPI {
                   //AuthorizationUrl = new System.Uri("https://patrickcodeevents.b2clogin.com/patrickcodeevents.onmicrosoft.com/b2c_1_code_events_signup_signin/oauth2/v2.0/authorize?client_id=06eb34fd-455b-4084-92c3-07d5389e6c15&redirect_uri=https%3A%2F%2Flocalhost%3A5001%2Fauth%2Fsuccess&response_type=id_token&scope=openid%20profile&response_mode=form_post&nonce=637208568163422217.OTAwNGQ1ZDEtMDAzOC00ZWM0LTllYTktZmVkMjFlZWIzNmE5ZWQzZjAzZDctYWYxMC00MmJlLTkxMDUtMzg5Y2M2ZWVjN2Ri&state=CfDJ8JkAwUPuIRhNraWx2fBSKAIjzH_3f-HGf4GIs7ca5c4GgwFrp-Kf_AnmL1rqTjc7ZrPqFlx10ll7wKFBhdjRdsycTBMOBP1EazR_bMIawDzFqT7onmiGBw4-bNnPyUSYqqc8awd_nFuGsuKqRsp3SLRg_yC5sG-x8YvAGpDPN_g-xhhWxp7JlNxVm0lZuIOz3wy1D1E-DA2NswLE1Fu2J3PJaiChKGlx2_OoHdnFZKgzLhox-Ibfob-XfDI7x2GJfWvG_FmB4b9_sMKGxwGn7qY7VjWoeAADMiI3cRWqZjOfF65pudqE3rkkb3EeCroxCw&x-client-SKU=ID_NETSTANDARD2_0&x-client-ver=5.5.0.0", System.UriKind.Absolute),
                   //AuthorizationUrl = new System.Uri("/AzureADB2C/Account/SignIn/AzureADB2C", System.UriKind.Relative),
                   AuthorizationUrl = new System.Uri(
-                    // "https://patrickcodeevents.b2clogin.com/patrickcodeevents.onmicrosoft.com/oauth2/v2.0/authorize?p=B2C_1_code_events_signup_signin",
-                    $"https://login.microsoftonline.com/{Configuration["AzureAdB2C:TenantId"]}/oauth2/v2.0/authorize",
+                    "https://patrickcodeevents.b2clogin.com/patrickcodeevents.onmicrosoft.com/oauth2/v2.0/authorize?p=B2C_1_code_events_signup_signin",
+                    // $"https://login.microsoftonline.com/{Configuration["AzureAdB2C:TenantId"]}/oauth2/v2.0/authorize",
                     System.UriKind.Absolute
                   ),
                   // TokenUrl = new System.Uri(
