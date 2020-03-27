@@ -53,7 +53,8 @@ namespace CodeEventsAPI {
           jwtOptions => {
             jwtOptions.Authority =
               // $"https://login.microsoftonline.com/{Configuration["AzureAdB2C:TenantId"]}/{Configuration["AzureAdB2C:Policy"]}/v2.0/";
-              $"https://login.microsoftonline.com/{Configuration["AzureAdB2C:TenantId"]}/v2.0/";
+              // $"https://login.microsoftonline.com/{Configuration["AzureAdB2C:TenantId"]}/v2.0/";
+              $"https://patrickcodeevents.b2clogin.com/tfp/{Configuration["AzureAdB2C:TenantId"]}/{Configuration["AzureAdB2C:Policy"]}/v2.0/";
             jwtOptions.Audience = Configuration["AzureAdB2C:ClientId"];
           }
         );
