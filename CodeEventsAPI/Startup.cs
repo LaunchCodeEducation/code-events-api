@@ -43,26 +43,34 @@ namespace CodeEventsAPI {
       );
 
       // configure ADB2C auth handling
-      //services.AddAuthentication(AzureADB2CDefaults.AuthenticationScheme)
-      services.AddAuthentication(options => {
-        //options.DefaultScheme = AzureADB2CDefaults.AuthenticationScheme;
-        options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-        //options.AddScheme()
-      })
-        //.AddAzureADB2C(options => Configuration.Bind("AzureAdB2C", options))
-        .AddJwtBearer(jwtOptions =>
-                {
-                  jwtOptions.Authority = $"https://login.microsoftonline.com/tfp/{Configuration["AzureAdB2C:Tenant"]}/{Configuration["AzureAdB2C:Policy"]}/v2.0/";
-                  jwtOptions.Audience = Configuration["AzureAdB2C:ClientId"];
-                });
+      services.AddAuthentication(AzureADB2CDefaults.AuthenticationScheme)
+        .AddAzureADB2C(options => Configuration.Bind("AzureAdB2C", options));
+      services.Configure<AzureADB2COptions>(Configuration.GetSection("AzureAdB2C"));
+
+      // services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+      //   .AddJwtBearer(
+      //     jwtOptions => {
+      //       jwtOptions.Authority =
+      //         $"https://login.microsoftonline.com/tfp/{Configuration["AzureAdB2C:Tenant"]}/{Configuration["AzureAdB2C:Policy"]}/v2.0/";
+      //       jwtOptions.Audience = Configuration["AzureAdB2C:ClientId"];
+      //     }
+      //   );
       services.AddOptions();
-      //services.Configure<AzureADB2COptions>(Configuration.GetSection("AzureAdB2C"));
 
       // configure swagger documentation
       services.AddSwaggerGen(
         options => {
           // generate the swagger doc
           // TODO: have document attached bearer header
+          // var bearerSR = new OpenApiSecurityRequirement();
+          // bearerSR.Add(
+          //   new OpenApiSecurityScheme {
+          //     Name = "Bearer",
+          //     Scheme = JwtBearerDefaults.AuthenticationScheme,
+          //   },
+          //   new List<string>()
+          // );
+          // options.AddSecurityRequirement(bearerSR);
           options.SwaggerDoc(
             "v1",
             new OpenApiInfo {
@@ -75,24 +83,35 @@ namespace CodeEventsAPI {
           options.EnableAnnotations();
           // req/res body examples
           options.ExampleFilters();
-          options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme {
-            Type = SecuritySchemeType.OAuth2,
-            Flows = new OpenApiOAuthFlows
-            {
-                Implicit = new OpenApiOAuthFlow
-                {
-                    //AuthorizationUrl = new System.Uri("https://patrickcodeevents.b2clogin.com/patrickcodeevents.onmicrosoft.com/b2c_1_code_events_signup_signin/oauth2/v2.0/authorize?client_id=06eb34fd-455b-4084-92c3-07d5389e6c15&redirect_uri=https%3A%2F%2Flocalhost%3A5001%2Fauth%2Fsuccess&response_type=id_token&scope=openid%20profile&response_mode=form_post&nonce=637208568163422217.OTAwNGQ1ZDEtMDAzOC00ZWM0LTllYTktZmVkMjFlZWIzNmE5ZWQzZjAzZDctYWYxMC00MmJlLTkxMDUtMzg5Y2M2ZWVjN2Ri&state=CfDJ8JkAwUPuIRhNraWx2fBSKAIjzH_3f-HGf4GIs7ca5c4GgwFrp-Kf_AnmL1rqTjc7ZrPqFlx10ll7wKFBhdjRdsycTBMOBP1EazR_bMIawDzFqT7onmiGBw4-bNnPyUSYqqc8awd_nFuGsuKqRsp3SLRg_yC5sG-x8YvAGpDPN_g-xhhWxp7JlNxVm0lZuIOz3wy1D1E-DA2NswLE1Fu2J3PJaiChKGlx2_OoHdnFZKgzLhox-Ibfob-XfDI7x2GJfWvG_FmB4b9_sMKGxwGn7qY7VjWoeAADMiI3cRWqZjOfF65pudqE3rkkb3EeCroxCw&x-client-SKU=ID_NETSTANDARD2_0&x-client-ver=5.5.0.0", System.UriKind.Absolute),
-                    //AuthorizationUrl = new System.Uri("/AzureADB2C/Account/SignIn/AzureADB2C", System.UriKind.Relative),
-                    AuthorizationUrl = new System.Uri("https://patrickcodeevents.b2clogin.com/patrickcodeevents.onmicrosoft.com/oauth2/v2.0/authorize?p=B2C_1_code_events_signup_signin", System.UriKind.Absolute),
-                    TokenUrl = new System.Uri("https://patrickcodeevents.b2clogin.com/patrickcodeevents.onmicrosoft.com/oauth2/v2.0/token?p=B2C_1_code_events_signup_signin", System.UriKind.Absolute),
-                    Scopes = new Dictionary<string, string>
+          options.AddSecurityDefinition(
+            "oauth2",
+            new OpenApiSecurityScheme {
+              Type = SecuritySchemeType.OAuth2,
+              Flows = new OpenApiOAuthFlows {
+                Implicit = new OpenApiOAuthFlow {
+                  //AuthorizationUrl = new System.Uri("https://patrickcodeevents.b2clogin.com/patrickcodeevents.onmicrosoft.com/b2c_1_code_events_signup_signin/oauth2/v2.0/authorize?client_id=06eb34fd-455b-4084-92c3-07d5389e6c15&redirect_uri=https%3A%2F%2Flocalhost%3A5001%2Fauth%2Fsuccess&response_type=id_token&scope=openid%20profile&response_mode=form_post&nonce=637208568163422217.OTAwNGQ1ZDEtMDAzOC00ZWM0LTllYTktZmVkMjFlZWIzNmE5ZWQzZjAzZDctYWYxMC00MmJlLTkxMDUtMzg5Y2M2ZWVjN2Ri&state=CfDJ8JkAwUPuIRhNraWx2fBSKAIjzH_3f-HGf4GIs7ca5c4GgwFrp-Kf_AnmL1rqTjc7ZrPqFlx10ll7wKFBhdjRdsycTBMOBP1EazR_bMIawDzFqT7onmiGBw4-bNnPyUSYqqc8awd_nFuGsuKqRsp3SLRg_yC5sG-x8YvAGpDPN_g-xhhWxp7JlNxVm0lZuIOz3wy1D1E-DA2NswLE1Fu2J3PJaiChKGlx2_OoHdnFZKgzLhox-Ibfob-XfDI7x2GJfWvG_FmB4b9_sMKGxwGn7qY7VjWoeAADMiI3cRWqZjOfF65pudqE3rkkb3EeCroxCw&x-client-SKU=ID_NETSTANDARD2_0&x-client-ver=5.5.0.0", System.UriKind.Absolute),
+                  //AuthorizationUrl = new System.Uri("/AzureADB2C/Account/SignIn/AzureADB2C", System.UriKind.Relative),
+                  AuthorizationUrl = new System.Uri(
+                    "https://patrickcodeevents.b2clogin.com/patrickcodeevents.onmicrosoft.com/oauth2/v2.0/authorize?p=B2C_1_code_events_signup_signin",
+                    System.UriKind.Absolute
+                  ),
+                  TokenUrl = new System.Uri(
+                    "https://patrickcodeevents.b2clogin.com/patrickcodeevents.onmicrosoft.com/oauth2/v2.0/token?p=B2C_1_code_events_signup_signin",
+                    System.UriKind.Absolute
+                  ),
+                  Scopes = new Dictionary<string, string> {
                     {
-                        {"https://patrickcodeevents.onmicrosoft.com/code-events/user-impersonation", "Access Swagger on behalf of the CodeEvents signed in user" },
-                        {"https://patrickcodeevents.onmicrosoft.com/code-events/api_access", "Access the CodeEventsAPI"}
+                      "https://patrickcodeevents.onmicrosoft.com/code-events/user-impersonation",
+                      "Access Swagger on behalf of the CodeEvents signed in user"
+                    }, {
+                      "https://patrickcodeevents.onmicrosoft.com/code-events/api_access",
+                      "Access the CodeEventsAPI"
                     }
+                  }
                 }
+              }
             }
-          });
+          );
         }
       );
 
