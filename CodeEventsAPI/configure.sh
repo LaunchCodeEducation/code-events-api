@@ -37,7 +37,8 @@ apt install -y apt-transport-https && \
 apt update -y
 
 # install dotnet runtime
-apt install -y dotnet-runtime-3.1 
+# apt install -y dotnet-runtime-3.1 
+apt install -y aspnetcore-runtime-3.1
 
 # install nginx
 apt install -y nginx
