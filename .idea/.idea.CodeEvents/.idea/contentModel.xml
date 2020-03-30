@@ -9,6 +9,8 @@
         <e p="basic-deploy.md" t="Include" />
         <e p="bin" t="ExcludeRecursive" />
         <e p="CodeEventsAPI.csproj" t="IncludeRecursive" />
+        <e p="configure.sh" t="Include" />
+        <e p="deliver.sh" t="Include" />
         <e p="Controllers" t="Include">
           <e p="CodeEventsController.cs" t="Include" />
           <e p="MembersController.cs" t="Include" />
