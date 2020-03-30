@@ -15,9 +15,12 @@ api_working_dir=/opt/code-events-api
 # -- end env vars --
 
 # -- set up user and directories --
-
-useradd -M "$api_service_user" 
+useradd -M "$api_service_user" -N -g student
 mkdir /opt/code-events-api
+
+chmod 771 /opt/code-events-api/
+chown root:student /opt/code-events-api/
+
 mkdir -p /etc/nginx/external
 
 # -- end set up --
