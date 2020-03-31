@@ -10,7 +10,6 @@
         <e p="bin" t="ExcludeRecursive" />
         <e p="CodeEventsAPI.csproj" t="IncludeRecursive" />
         <e p="configure.sh" t="Include" />
-        <e p="deliver.sh" t="Include" />
         <e p="Controllers" t="Include">
           <e p="CodeEventsController.cs" t="Include" />
           <e p="MembersController.cs" t="Include" />
@@ -26,6 +25,7 @@
             <e p="CodeEventsDBContextModelSnapshot.cs" t="Include" />
           </e>
         </e>
+        <e p="deliver.sh" t="Include" />
         <e p="Middleware" t="Include">
           <e p="AddUserIdClaimMiddleware.cs" t="Include" />
           <e p="RegisterNewUser.cs" t="Include" />
