@@ -57,17 +57,16 @@ openssl req -x509 -newkey rsa:4086 \
 
 # -- generate conf files --
 
-# TODO: it is stripping nginx $<var> values because of the heredoc!
 # nginx conf
 cat << EOF > /etc/nginx/nginx.conf
 events {}
 http {
   # proxy settings
   proxy_redirect          off;
-  proxy_set_header        Host $host;
-  proxy_set_header        X-Real-IP $remote_addr;
-  proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
-  proxy_set_header        X-Forwarded-Proto $scheme;
+  proxy_set_header        Host \$host;
+  proxy_set_header        X-Real-IP \$remote_addr;
+  proxy_set_header        X-Forwarded-For \$proxy_add_x_forwarded_for;
+  proxy_set_header        X-Forwarded-Proto \$scheme;
   client_max_body_size    10m;
   client_body_buffer_size 128k;
   proxy_connect_timeout   90;
@@ -75,7 +74,7 @@ http {
   proxy_read_timeout      90;
   proxy_buffers           32 4k;
 
-  limit_req_zone $binary_remote_addr zone=one:10m rate=5r/s;
+  limit_req_zone \$binary_remote_addr zone=one:10m rate=5r/s;
   server_tokens  off;
 
   sendfile on;
@@ -89,7 +88,7 @@ http {
   server {
     listen     *:80;
     add_header Strict-Transport-Security max-age=15768000;
-    return     301 https://$host$request_uri;
+    return     301 https://\$host\$request_uri;
   }
 
   server {
@@ -125,14 +124,14 @@ cat << EOF > /etc/systemd/system/code-events-api.service
 Description=Code Events API
 
 [Service]
+User=$api_service_user
 WorkingDirectory=$api_working_dir
+SyslogIdentifier=code-events-api
 ExecStart=/usr/bin/dotnet ${api_working_dir}/CodeEventsAPI.dll
 Restart=always
 # Restart service after 10 seconds if the dotnet service crashes:
 RestartSec=10
 KillSignal=SIGINT
-SyslogIdentifier=code-events-api
-User=$api_service_user
 Environment=ASPNETCORE_ENVIRONMENT=Production
 Environment=DOTNET_PRINT_TELEMETRY_MESSAGE=false
 
