@@ -28,7 +28,6 @@
         <e p="deliver.sh" t="Include" />
         <e p="Middleware" t="Include">
           <e p="AddUserIdClaimMiddleware.cs" t="Include" />
-          <e p="RegisterNewUser.cs" t="Include" />
         </e>
         <e p="migrate" t="Include" />
         <e p="migrate.sql" t="Include" />
@@ -51,6 +50,8 @@
         <e p="ServerConfig.cs" t="Include" />
         <e p="Services" t="Include">
           <e p="CodeEventService.cs" t="Include" />
+          <e p="MemberService.cs" t="Include" />
+          <e p="UserTransferenceService.cs" t="Include" />
         </e>
         <e p="Startup.cs" t="Include" />
         <e p="Swagger" t="Include">

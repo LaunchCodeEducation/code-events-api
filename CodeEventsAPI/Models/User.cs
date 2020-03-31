@@ -6,8 +6,8 @@ namespace CodeEventsAPI.Models {
     public User() { }
 
     public User(ClaimsPrincipal authedUser) {
-      Username = authedUser.Identity.Name;
-      Email = authedUser.FindFirst("emails").Value;
+      Username = authedUser.FindFirstValue("name");
+      Email = authedUser.FindFirstValue("emails");
       AzureOId = authedUser.FindFirstValue(
         "http://schemas.microsoft.com/identity/claims/objectidentifier"
       );

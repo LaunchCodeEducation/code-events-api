@@ -26,8 +26,7 @@ namespace CodeEventsAPI {
     public IConfiguration Configuration { get; }
 
     public void ConfigureServices(IServiceCollection services) {
-      // TODO: add to keyvault on deploy
-      // used to generate absolute resource links
+      // used to generate absolute URL resource links
       ServerConfig.Origin = Configuration.GetValue<string>("ServerOrigin");
 
       // configure routing
@@ -35,7 +34,9 @@ namespace CodeEventsAPI {
       services.AddControllers();
 
       // add coordinator services
-      services.AddScoped<CodeEventService>();
+      services.AddScoped<IMemberService, MemberService>();
+      services.AddScoped<ICodeEventService, CodeEventService>();
+      services.AddScoped<IUserTransferenceService, UserTransferenceService>();
 
       // configure DB
       services.AddDbContext<CodeEventsDbContext>(
@@ -133,7 +134,6 @@ namespace CodeEventsAPI {
       app.UseAuthentication(); // authenticate first
       app.UseAuthorization(); // authorize next
 
-      app.UseMiddleware<RegisterNewUserMiddleware>();
       app.UseMiddleware<AddUserIdClaimMiddleware>();
 
       app.UseEndpoints(endpoints => endpoints.MapControllers()); // continue to Controller handlers

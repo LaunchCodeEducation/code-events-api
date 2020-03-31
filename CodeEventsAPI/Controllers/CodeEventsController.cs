@@ -19,10 +19,12 @@ namespace CodeEventsAPI.Controllers {
     public static readonly CodeEventResourceLinks ResourceLinks =
       new CodeEventResourceLinks(Entrypoint);
 
-    private readonly CodeEventService _codeEventService;
+    private readonly ICodeEventService _codeEventService;
+    private readonly IMemberService _memberService;
 
-    public CodeEventsController(CodeEventService codeEventService) {
+    public CodeEventsController(ICodeEventService codeEventService, IMemberService memberService) {
       _codeEventService = codeEventService;
+      _memberService = memberService;
     }
 
     [HttpGet]
@@ -87,7 +89,7 @@ Owner Role: links.cancel
       [FromRoute, SwaggerParameter("The ID of the Code Event", Required = true)]
       long codeEventId
     ) {
-      var userIsMember = _codeEventService.IsUserAMember(codeEventId, HttpContext.User);
+      var userIsMember = _memberService.IsUserAMember(codeEventId, HttpContext.User);
       if (!userIsMember) return StatusCode(403);
 
       var codeEventDto = _codeEventService.GetCodeEventById(codeEventId, HttpContext.User);
@@ -111,7 +113,7 @@ Owner Role: links.cancel
       [FromRoute, SwaggerParameter("The ID of the Code Event", Required = true)]
       long codeEventId
     ) {
-      var isOwner = _codeEventService.IsUserAnOwner(codeEventId, HttpContext.User);
+      var isOwner = _memberService.IsUserAnOwner(codeEventId, HttpContext.User);
       if (!isOwner) return StatusCode(403);
 
       _codeEventService.CancelCodeEvent(codeEventId);

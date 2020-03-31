@@ -14,14 +14,16 @@ namespace CodeEventsAPI.Controllers {
   [Consumes(MediaTypeNames.Application.Json)]
   [Produces(MediaTypeNames.Application.Json)]
   public class MembersController : ControllerBase {
-    private readonly CodeEventService _codeEventService;
+    private readonly ICodeEventService _codeEventService;
+    private readonly IMemberService _memberService;
 
     // the entrypoint is still /api/events while {codeEventId} is inserted dynamically
     public static readonly MemberResourceLinks ResourceLinks =
       new MemberResourceLinks(CodeEventsController.Entrypoint);
 
-    public MembersController(CodeEventService codeEventService) {
+    public MembersController(ICodeEventService codeEventService, IMemberService memberService) {
       _codeEventService = codeEventService;
+      _memberService = memberService;
     }
 
     [HttpGet]
@@ -48,7 +50,7 @@ Owner Role: complete data (username, role, email, and links.remove)
       [FromRoute, SwaggerParameter("The ID of the Code Event", Required = true)]
       long codeEventId
     ) {
-      var userIsMember = _codeEventService.IsUserAMember(codeEventId, HttpContext.User);
+      var userIsMember = _memberService.IsUserAMember(codeEventId, HttpContext.User);
       if (!userIsMember) return StatusCode(403);
 
       return Ok(_codeEventService.GetMembersList(codeEventId, HttpContext.User));
@@ -68,8 +70,7 @@ Owner Role: complete data (username, role, email, and links.remove)
       [FromRoute, SwaggerParameter("The ID of the Code Event", Required = true)]
       long codeEventId
     ) {
-      var userCanRegister =
-        _codeEventService.CanUserRegisterAsMember(codeEventId, HttpContext.User);
+      var userCanRegister = _memberService.CanUserRegisterAsMember(codeEventId, HttpContext.User);
 
       if (!userCanRegister) return BadRequest();
 
@@ -93,10 +94,10 @@ Owner Role: complete data (username, role, email, and links.remove)
       [FromRoute, SwaggerParameter("The ID of the Code Event", Required = true)]
       long codeEventId
     ) {
-      var userIsMember = _codeEventService.IsUserAMember(codeEventId, HttpContext.User);
+      var userIsMember = _memberService.IsUserAMember(codeEventId, HttpContext.User);
       if (!userIsMember) return StatusCode(403);
 
-      var userIsOwner = _codeEventService.IsUserAnOwner(codeEventId, HttpContext.User);
+      var userIsOwner = _memberService.IsUserAnOwner(codeEventId, HttpContext.User);
       if (userIsOwner) return BadRequest();
 
       _codeEventService.LeaveCodeEvent(codeEventId, HttpContext.User);
@@ -122,10 +123,10 @@ Owner Role: complete data (username, role, email, and links.remove)
       [FromRoute, SwaggerParameter("The ID of the Member", Required = true)]
       long memberId
     ) {
-      var isOwner = _codeEventService.IsUserAnOwner(codeEventId, HttpContext.User);
+      var isOwner = _memberService.IsUserAnOwner(codeEventId, HttpContext.User);
       if (!isOwner) return StatusCode(403);
 
-      var memberExists = _codeEventService.DoesMemberExist(memberId);
+      var memberExists = _memberService.DoesMemberExist(memberId);
       if (!memberExists) return NotFound();
 
       _codeEventService.RemoveMember(memberId);
