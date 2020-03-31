@@ -20,6 +20,7 @@ namespace CodeEventsAPI.Middleware {
       }
 
       var user = new User(authedUser);
+      // TODO: handle if not found otherwise new accounts have to be recreated on deploy
       var userId = dbContext.Users.First(u => u.AzureOId == user.AzureOId).Id;
 
       // inject user id into context.User
