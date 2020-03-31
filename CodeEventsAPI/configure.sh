@@ -10,7 +10,7 @@ tls_cert_path=/etc/nginx/external/cert.pem
 
 # api
 api_service_user=api-user
-api_working_dir=/opt/code-events-api
+api_working_dir=/opt/code-events-api/deploy
 
 # -- end env vars --
 
@@ -18,8 +18,8 @@ api_working_dir=/opt/code-events-api
 useradd -M "$api_service_user" -N -g student
 mkdir /opt/code-events-api
 
-chmod 771 /opt/code-events-api/
-chown root:student /opt/code-events-api/
+chmod 770 /opt/code-events-api/
+chown "$api_service_user":student /opt/code-events-api/
 
 mkdir -p /etc/nginx/external
 
@@ -57,8 +57,10 @@ openssl req -x509 -newkey rsa:4086 \
 
 # -- generate conf files --
 
+# TODO: it is stripping nginx $<var> values because of the heredoc!
 # nginx conf
 cat << EOF > /etc/nginx/nginx.conf
+events {}
 http {
   # proxy settings
   proxy_redirect          off;
@@ -93,8 +95,8 @@ http {
   server {
     listen                    *:443 ssl;
     server_name               codeeventsapi.com;
-    ssl_certificate           $tls_key_path;
-    ssl_certificate_key       $tls_cert_path;
+    ssl_certificate           $tls_cert_path;
+    ssl_certificate_key       $tls_key_path;
     ssl_protocols             TLSv1.1 TLSv1.2;
     ssl_prefer_server_ciphers on;
     ssl_ciphers               "EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH";
@@ -141,12 +143,12 @@ EOF
 # -- end generate conf --
 
 
-# -- startup --
+# -- enable --
 
-# run nginx
-service nginx start
+# enable nginx
+service enable nginx
 
-# run API
-service code-events-api start
+# enable api
+service enable code-events-api
 
-# -- end startup --
+# -- end enable --
